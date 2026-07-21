@@ -31,18 +31,33 @@ class CekSiswaController extends Controller
 
 
     public function detail($id)
-    {
-
-        $siswa = Siswa::with([
-            'kelulusans.materi',
-            'kelulusans.user'
-        ])
-        ->findOrFail($id);
+{
+    $siswa = Siswa::with([
+        'kelulusans.materi',
+        'kelulusans.user'
+    ])->findOrFail($id);
 
 
+    $totalMateri = \App\Models\Materi::count();
 
-        return view('detail-siswa', compact('siswa'));
+    $lulus = $siswa->kelulusans->count();
 
+
+    $persentase = 0;
+
+    if($totalMateri > 0){
+        $persentase = round(
+            ($lulus / $totalMateri) * 100
+        );
     }
+
+
+    return view('detail-siswa', compact(
+        'siswa',
+        'totalMateri',
+        'lulus',
+        'persentase'
+    ));
+}
 
 }

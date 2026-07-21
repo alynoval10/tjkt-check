@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Kelulusan extends Model
 {
@@ -16,19 +15,19 @@ class Kelulusan extends Model
 
 
     public function siswa()
-    {
-        return $this->belongsTo(Siswa::class);
-    }
+{
+    return $this->belongsTo(Siswa::class);
+}
 
 
-    public function materi()
-    {
-        return $this->belongsTo(Materi::class);
-    }
+public function materi()
+{
+    return $this->belongsTo(Materi::class);
+}
 
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }

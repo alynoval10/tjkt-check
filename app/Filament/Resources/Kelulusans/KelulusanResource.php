@@ -31,21 +31,6 @@ class KelulusanResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'id';
 
-    public static function getNavigationLabel(): string
-{
-    return 'Kelulusan';
-}
-
-public static function getModelLabel(): string
-{
-    return 'Kelulusan';
-}
-
-public static function getPluralModelLabel(): string
-{
-    return 'Kelulusan';
-}
-    
     public static function form(Schema $schema): Schema
 {
     return $schema

@@ -4,75 +4,205 @@
 
 <head>
 
+<title>
+TJKT CHECK - {{$siswa->nama}}
+</title>
+
+
 <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
 
 
-<body class="bg-gray-100">
+<body class="bg-slate-100">
 
 
-<div class="max-w-3xl mx-auto mt-10">
+<div class="max-w-5xl mx-auto py-10">
 
 
-<div class="bg-white p-8 rounded-xl shadow">
+<!-- HEADER -->
+
+<div class="bg-blue-700 text-white rounded-2xl p-8 shadow">
 
 
 <h1 class="text-3xl font-bold">
 
-{{$siswa->nama}}
+TJKT CHECK
 
 </h1>
 
 
 <p>
+Monitoring Kompetensi Siswa
+</p>
+
+
+</div>
+
+
+
+<!-- DATA SISWA -->
+
+<div class="bg-white rounded-2xl shadow p-8 mt-6">
+
+
+<div class="flex justify-between">
+
+
+<div>
+
+
+<h2 class="text-3xl font-bold">
+
+{{$siswa->nama}}
+
+</h2>
+
+
+<p class="mt-2">
+
 NIS : {{$siswa->nis}}
+
 </p>
 
 
 <p>
+
 Kelas : {{$siswa->kelas}}
+
 </p>
 
 
+</div>
 
-<hr class="my-5">
 
 
-<h2 class="text-xl font-bold">
+<div class="text-right">
 
-Materi Lulus
+
+<p class="text-gray-500">
+
+Progress
+
+</p>
+
+
+<h2 class="text-4xl font-bold text-blue-600">
+
+{{$persentase}}%
+
+</h2>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="mt-6">
+
+
+<div class="w-full bg-gray-200 rounded-full h-4">
+
+
+<div
+
+class="bg-green-500 h-4 rounded-full"
+
+style="width: {{$persentase}}%"
+
+>
+
+</div>
+
+
+</div>
+
+
+<p class="mt-2">
+
+{{$lulus}} dari {{$totalMateri}} materi sudah lulus
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- MATERI -->
+
+
+<div class="bg-white rounded-2xl shadow p-8 mt-6">
+
+
+<h2 class="text-2xl font-bold mb-5">
+
+📚 Materi Kompetensi
 
 </h2>
 
 
 
-@foreach($siswa->kelulusans as $lulus)
+
+@foreach($siswa->kelulusans as $item)
 
 
-<div class="bg-green-100 p-4 rounded-lg mt-3">
+<div class="border rounded-xl p-5 mb-4 bg-green-50">
 
 
-<b>
-✅ {{$lulus->materi->nama}}
-</b>
+<div class="flex justify-between">
 
 
-<br>
+<h3 class="font-bold text-lg">
+
+✅ {{$item->materi->nama}}
+
+</h3>
 
 
-Penguji :
-{{$lulus->user->name}}
+<span class="text-green-600">
 
+Lulus
 
-<br>
-
-
-Tanggal :
-{{$lulus->tanggal_uji}}
+</span>
 
 
 </div>
+
+
+
+<div class="mt-3 text-gray-600">
+
+
+<p>
+
+👨‍🏫 Penguji :
+{{$item->user->name}}
+
+</p>
+
+
+<p>
+
+📅 Tanggal :
+{{$item->tanggal_uji}}
+
+</p>
+
+
+</div>
+
+
+</div>
+
 
 
 @endforeach

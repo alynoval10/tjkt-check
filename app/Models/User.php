@@ -22,6 +22,10 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public function kelulusans()
+{
+    return $this->hasMany(Kelulusan::class);
+}
     protected function casts(): array
     {
         return [
