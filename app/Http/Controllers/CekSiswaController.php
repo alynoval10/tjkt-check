@@ -7,26 +7,32 @@ use Illuminate\Http\Request;
 
 class CekSiswaController extends Controller
 {
-    public function index(Request $request)
+
+    public function index()
     {
-        $keyword = $request->search;
-
-        $siswas = Siswa::when($keyword, function($query) use ($keyword){
-
-            $query->where('nama','like','%'.$keyword.'%')
-                  ->orWhere('nis','like','%'.$keyword.'%');
-
-        })
-        ->limit(20)
-        ->get();
-
-
-        return view('cek-siswa.index', compact('siswas'));
+        return view('cek');
     }
+
+
+    public function search(Request $request)
+    {
+        $keyword = $request->keyword;
+
+
+        $siswas = Siswa::where('nama','like',"%$keyword%")
+            ->orWhere('nis','like',"%$keyword%")
+            ->limit(10)
+            ->get();
+
+
+        return response()->json($siswas);
+    }
+
 
 
     public function detail($id)
     {
+
         $siswa = Siswa::with([
             'kelulusans.materi',
             'kelulusans.user'
@@ -34,6 +40,9 @@ class CekSiswaController extends Controller
         ->findOrFail($id);
 
 
-        return view('cek-siswa.detail', compact('siswa'));
+
+        return view('detail-siswa', compact('siswa'));
+
     }
+
 }
