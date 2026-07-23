@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Kelulusan extends Model
 {
     protected $fillable = [
-        'siswa_id',
-        'materi_id',
-        'user_id',
+        'siswa_nama',
+        'materi_nama',
+        'user_nama',
         'tanggal_uji',
     ];
 

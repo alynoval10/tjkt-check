@@ -5,9 +5,30 @@
 <head>
 
 <title>
-TJKT CHECK - {{$siswa->nama}}
+Hasil Kompetensi {{$siswa->nama}} - TJKT CHECK
 </title>
+<style>
 
+@media print {
+
+    body {
+        background: white;
+    }
+
+
+    button,
+    a {
+        display:none !important;
+    }
+
+
+    .shadow {
+        box-shadow:none !important;
+    }
+
+}
+
+</style>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -39,7 +60,20 @@ Monitoring Kompetensi Siswa
 
 </div>
 
+<div class="flex gap-3 mt-6">
 
+    <a href="{{ url('/cek-siswa') }}"
+       class="bg-gray-600 text-white px-5 py-2 rounded-lg hover:bg-gray-700">
+        ← Kembali ke Pencarian
+    </a>
+
+
+    <button onclick="window.print()"
+       class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+        🖨 Cetak Hasil
+    </button>
+
+</div>
 
 <!-- DATA SISWA -->
 
@@ -151,7 +185,7 @@ style="width: {{$persentase}}%"
 
 
 
-@foreach($materis as $materi)
+@foreach($materis ?? [] as $materi)
 
 @php
     $kelulusan = $siswa->kelulusans
