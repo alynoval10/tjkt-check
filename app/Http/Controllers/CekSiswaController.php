@@ -30,7 +30,7 @@ class CekSiswaController extends Controller
 
 
 
-    public function detail($id)
+ public function detail($id)
 {
     $siswa = Siswa::with([
         'kelulusans.materi',
@@ -38,7 +38,12 @@ class CekSiswaController extends Controller
     ])->findOrFail($id);
 
 
-    $totalMateri = \App\Models\Materi::count();
+    // Ambil semua materi
+    $materis = \App\Models\Materi::all();
+
+
+    $totalMateri = $materis->count();
+
 
     $lulus = $siswa->kelulusans->count();
 
@@ -54,6 +59,7 @@ class CekSiswaController extends Controller
 
     return view('detail-siswa', compact(
         'siswa',
+        'materis',
         'totalMateri',
         'lulus',
         'persentase'

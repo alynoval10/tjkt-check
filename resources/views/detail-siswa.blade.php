@@ -151,22 +151,26 @@ style="width: {{$persentase}}%"
 
 
 
+@foreach($materis as $materi)
 
-@foreach($siswa->kelulusans as $item)
+@php
+    $kelulusan = $siswa->kelulusans
+        ->where('materi_id', $materi->id)
+        ->first();
+@endphp
 
+
+@if($kelulusan)
 
 <div class="border rounded-xl p-5 mb-4 bg-green-50">
 
-
 <div class="flex justify-between">
 
+<h3 class="font-bold text-lg text-green-700">
 
-<h3 class="font-bold text-lg">
-
-✅ {{$item->materi->nama}}
+✅ {{$materi->nama}}
 
 </h3>
-
 
 <span class="text-green-600">
 
@@ -174,35 +178,63 @@ Lulus
 
 </span>
 
-
 </div>
-
 
 
 <div class="mt-3 text-gray-600">
 
-
 <p>
-
 👨‍🏫 Penguji :
-{{$item->user->name}}
-
+{{$kelulusan->user->name ?? '-'}}
 </p>
 
 
 <p>
-
 📅 Tanggal :
-{{$item->tanggal_uji}}
-
+{{$kelulusan->tanggal_uji}}
 </p>
 
+</div>
+
+</div>
+
+
+@else
+
+
+<div class="border rounded-xl p-5 mb-4 bg-gray-100">
+
+<div class="flex justify-between">
+
+<h3 class="font-bold text-lg text-gray-500">
+
+○ {{$materi->nama}}
+
+</h3>
+
+
+<span class="text-gray-500">
+
+Belum Lulus
+
+</span>
+
+</div>
+
+
+<div class="mt-3 text-gray-400">
+
+<p>
+Belum dilakukan pengujian
+</p>
 
 </div>
 
 
 </div>
 
+
+@endif
 
 
 @endforeach
