@@ -46,7 +46,6 @@ class KelulusanResource extends Resource
             Select::make('materi_id')
                 ->label('Materi')
                 ->relationship('materi','nama')
-                ->searchable()
                 ->required(),
 
 
