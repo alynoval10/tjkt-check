@@ -280,6 +280,15 @@ Belum dilakukan pengujian
 
 </div>
 
+<footer class="text-center text-sm text-gray-500 py-6 border-t mt-10">
+    Designed & Developed by
+    <a href="https://instagram.com/alynoval10"
+       target="_blank"
+       class="text-blue-600 hover:underline">
+        Noval Aly, S.T.
+    </a>
+</footer>
+
 
 </body>
 
