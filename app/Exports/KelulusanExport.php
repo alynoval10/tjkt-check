@@ -13,23 +13,21 @@ class KelulusanExport implements FromCollection, WithHeadings
         return Kelulusan::with([
             'siswa',
             'materi',
-            'user'
-        ])
-        ->get()
-        ->map(function($item){
+            'user',
+        ])->get()->map(function ($item) {
 
             return [
-                'Nama Siswa' => $item->siswa->nama,
-                'NIS' => $item->siswa->nis,
-                'Kelas' => $item->siswa->kelas,
-                'Materi' => $item->materi->nama,
-                'Penguji' => $item->user->name,
-                'Tanggal Uji' => $item->tanggal_uji,
+                $item->siswa->nama ?? '',
+                $item->siswa->nis ?? '',
+                $item->siswa->kelas ?? '',
+                $item->materi->nama ?? '',
+                $item->user->name ?? '',
+                $item->tanggal_uji,
+                $item->nilai,
+                $item->catatan,
             ];
-
         });
     }
-
 
     public function headings(): array
     {
@@ -40,6 +38,8 @@ class KelulusanExport implements FromCollection, WithHeadings
             'Materi',
             'Penguji',
             'Tanggal Uji',
+            'Nilai',
+            'Catatan',
         ];
     }
 }

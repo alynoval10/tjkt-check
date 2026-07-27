@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Kelulusan extends Model
 {
     protected $fillable = [
-        'siswa_id',
-        'materi_id',
-        'user_id',
-        'tanggal_uji',
-    ];
+    'siswa_id',
+    'materi_id',
+    'user_id',
+    'tanggal_uji',
+    'nilai',
+    'catatan',
+];
 
 
     public function siswa()

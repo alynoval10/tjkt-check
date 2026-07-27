@@ -10,28 +10,33 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('kelulusans', function (Blueprint $table) {
+    {
+        Schema::create('kelulusans', function (Blueprint $table) {
+            $table->id();
 
-    $table->id();
+            $table->foreignId('siswa_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-    $table->foreignId('siswa_id')
-        ->constrained()
-        ->cascadeOnDelete();
+            $table->foreignId('materi_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-    $table->foreignId('materi_id')
-        ->constrained()
-        ->cascadeOnDelete();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-    $table->foreignId('user_id')
-        ->constrained()
-        ->cascadeOnDelete();
+            $table->date('tanggal_uji');
 
-    $table->date('tanggal_uji');
+            // Nilai hasil uji (0-100)
+            $table->unsignedTinyInteger('nilai')->nullable();
 
-    $table->timestamps();
-    });
-}
+            // Catatan dari penguji
+            $table->text('catatan')->nullable();
+
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

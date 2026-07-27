@@ -37,6 +37,41 @@ class KelulusansTable
         ->date()
         ->sortable(),
 
+   TextColumn::make('nilai')
+    ->label('Nilai')
+    ->formatStateUsing(function ($state) {
+
+        if ($state >= 90) {
+            return $state . ' (Sangat Baik)';
+        }
+
+        if ($state >= 75) {
+            return $state . ' (Baik)';
+        }
+
+        if ($state >= 60) {
+            return $state . ' (Cukup)';
+        }
+
+        return $state . ' (Remedial)';
+
+    })
+    ->badge()
+    ->color(function ($state) {
+
+        return match (true) {
+            $state >= 90 => 'success',
+            $state >= 75 => 'info',
+            $state >= 60 => 'warning',
+            default => 'danger',
+        };
+
+    }),
+
+    TextColumn::make('catatan')
+    ->label('Catatan')
+    ->limit(30),
+
     TextColumn::make('created_at')
         ->dateTime()
         ->sortable()
