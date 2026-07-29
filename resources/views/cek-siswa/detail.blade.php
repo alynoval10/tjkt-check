@@ -21,7 +21,7 @@
 
 <p>
 Kelas:
-{{$siswa->kelas}}
+{{ $siswa->rombel?->nama ?? '-' }}
 </p>
 
 

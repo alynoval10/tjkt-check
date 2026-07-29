@@ -102,7 +102,7 @@ NIS : {{$siswa->nis}}
 
 <p>
 
-Kelas : {{$siswa->kelas}}
+Kelas : {{ $siswa->rombel?->nama ?? '-' }}
 
 </p>
 
@@ -194,7 +194,7 @@ style="width: {{$persentase}}%"
 @endphp
 
 
-@if($kelulusan)
+@if($kelulusan && $kelulusan->nilai >= 75)
 
 <div class="border rounded-xl p-5 mb-4 bg-green-50">
 

@@ -53,7 +53,7 @@ search.addEventListener('keyup', function(){
     }
 
 
-    fetch('/cek-siswa/search?keyword=' + keyword)
+    fetch('/cek-siswa/search?keyword=' + encodeURIComponent(keyword))
 
     .then(response => response.json())
 
@@ -73,7 +73,7 @@ search.addEventListener('keyup', function(){
 
             NIS : ${siswa.nis}<br>
 
-            Kelas : ${siswa.kelas}
+            Kelas : ${siswa.rombel ? siswa.rombel.nama : '-'}
 
             </a>
 

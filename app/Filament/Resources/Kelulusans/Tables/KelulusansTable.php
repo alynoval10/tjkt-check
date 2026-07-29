@@ -8,9 +8,11 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Actions\Action;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KelulusanExport;
+use App\Models\Kelas;
 
 class KelulusansTable
 {
@@ -18,6 +20,8 @@ class KelulusansTable
 {
     return $table
        ->columns([
+    TextColumn::make('siswa.rombel.nama')->label('Kelas')->searchable()->sortable(),
+
     TextColumn::make('siswa.nama')
         ->label('Siswa')
         ->searchable()
@@ -84,7 +88,20 @@ class KelulusansTable
 ])
 
         ->filters([
-            //
+            SelectFilter::make('tingkat')
+                ->label('Tingkat')
+                ->options(['X' => 'X', 'XI' => 'XI', 'XII' => 'XII'])
+                ->query(fn ($query, array $data) => $query->when(
+                    $data['value'] ?? null,
+                    fn ($query, $tingkat) => $query->whereHas('siswa.rombel', fn ($q) => $q->where('tingkat', $tingkat))
+                )),
+            SelectFilter::make('kelas_id')
+                ->label('Kelas')
+                ->options(fn () => Kelas::query()->orderBy('tingkat')->orderBy('nama')->pluck('nama', 'id'))
+                ->query(fn ($query, array $data) => $query->when(
+                    $data['value'] ?? null,
+                    fn ($query, $kelasId) => $query->whereHas('siswa', fn ($q) => $q->where('kelas_id', $kelasId))
+                )),
         ])
 
         ->headerActions([

@@ -8,16 +8,31 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('kelulusans', function (Blueprint $table) {
-            $table->integer('nilai')->nullable()->after('tanggal_uji');
-            $table->text('catatan')->nullable()->after('nilai');
-        });
+        if (!Schema::hasColumn('kelulusans', 'nilai')) {
+            Schema::table('kelulusans', function (Blueprint $table) {
+                $table->integer('nilai')->nullable();
+            });
+        }
+
+        if (!Schema::hasColumn('kelulusans', 'catatan')) {
+            Schema::table('kelulusans', function (Blueprint $table) {
+                $table->text('catatan')->nullable();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('kelulusans', function (Blueprint $table) {
-            $table->dropColumn(['nilai', 'catatan']);
-        });
+        if (Schema::hasColumn('kelulusans', 'catatan')) {
+            Schema::table('kelulusans', function (Blueprint $table) {
+                $table->dropColumn('catatan');
+            });
+        }
+
+        if (Schema::hasColumn('kelulusans', 'nilai')) {
+            Schema::table('kelulusans', function (Blueprint $table) {
+                $table->dropColumn('nilai');
+            });
+        }
     }
 };

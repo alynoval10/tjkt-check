@@ -9,20 +9,13 @@ class MateriInfolist
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextEntry::make('kode')
-                    ->placeholder('-'),
-                TextEntry::make('nama'),
-                TextEntry::make('deskripsi')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-            ]);
+        return $schema->components([
+            TextEntry::make('kode')->placeholder('-'),
+            TextEntry::make('nama'),
+            TextEntry::make('tingkat')->label('Tingkat')->placeholder('Belum diatur'),
+            TextEntry::make('deskripsi')->placeholder('-')->columnSpanFull(),
+            TextEntry::make('created_at')->dateTime()->placeholder('-'),
+            TextEntry::make('updated_at')->dateTime()->placeholder('-'),
+        ]);
     }
 }

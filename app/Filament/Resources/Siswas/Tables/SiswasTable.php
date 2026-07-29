@@ -19,7 +19,7 @@ class SiswasTable
                     ->searchable(),
                 TextColumn::make('nama')
                     ->searchable(),
-                TextColumn::make('kelas')
+                TextColumn::make('rombel.nama')->label('Kelas')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

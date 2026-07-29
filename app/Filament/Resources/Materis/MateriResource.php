@@ -17,6 +17,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 
 class MateriResource extends Resource
@@ -48,20 +49,9 @@ public static function getPluralModelLabel(): string
 }
 
     public static function form(Schema $schema): Schema
-{
-    return $schema
-        ->components([
-
-            TextInput::make('kode')
-                ->required(),
-
-            TextInput::make('nama')
-                ->required(),
-
-            Textarea::make('deskripsi'),
-
-        ]);
-}
+    {
+        return MateriForm::configure($schema);
+    }
 
     public static function infolist(Schema $schema): Schema
     {
@@ -69,15 +59,14 @@ public static function getPluralModelLabel(): string
     }
 
     public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            TextColumn::make('kode'),
-
-            TextColumn::make('nama'),
-
-        ]);
-}
+    {
+        return $table
+            ->columns([
+                TextColumn::make('kode')->label('Kode')->searchable()->sortable(),
+                TextColumn::make('nama')->label('Nama Materi')->searchable()->sortable(),
+                TextColumn::make('tingkat')->label('Tingkat')->badge()->placeholder('Belum diatur')->sortable(),
+            ]);
+    }
 
     public static function getRelations(): array
     {

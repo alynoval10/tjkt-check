@@ -10,36 +10,23 @@ class KelulusanExport implements FromCollection, WithHeadings
 {
     public function collection()
     {
-        return Kelulusan::with([
-            'siswa',
-            'materi',
-            'user',
-        ])->get()->map(function ($item) {
-
-            return [
-                $item->siswa->nama ?? '',
-                $item->siswa->nis ?? '',
-                $item->siswa->kelas ?? '',
-                $item->materi->nama ?? '',
-                $item->user->name ?? '',
+        return Kelulusan::with(['siswa.rombel', 'materi', 'user'])
+            ->get()
+            ->map(fn ($item) => [
+                $item->siswa?->nama ?? '',
+                $item->siswa?->nis ?? '',
+                $item->siswa?->rombel?->tingkat ?? '',
+                $item->siswa?->rombel?->nama ?? '',
+                $item->materi?->nama ?? '',
+                $item->user?->name ?? '',
                 $item->tanggal_uji,
                 $item->nilai,
                 $item->catatan,
-            ];
-        });
+            ]);
     }
 
     public function headings(): array
     {
-        return [
-            'Nama Siswa',
-            'NIS',
-            'Kelas',
-            'Materi',
-            'Penguji',
-            'Tanggal Uji',
-            'Nilai',
-            'Catatan',
-        ];
+        return ['Nama Siswa', 'NIS', 'Tingkat', 'Kelas', 'Materi', 'Penguji', 'Tanggal Uji', 'Nilai', 'Catatan'];
     }
 }

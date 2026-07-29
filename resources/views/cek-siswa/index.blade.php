@@ -76,7 +76,7 @@ Cari
 
 <br>
 
-{{$siswa->kelas}}
+{{ $siswa->rombel?->nama ?? '-' }}
 
 </a>
 

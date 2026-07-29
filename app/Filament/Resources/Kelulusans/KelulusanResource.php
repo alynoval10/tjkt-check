@@ -21,6 +21,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use App\Models\Kelas;
+use App\Models\Siswa;
+use App\Models\Materi;
 
 class KelulusanResource extends Resource
 {
@@ -36,70 +40,93 @@ class KelulusanResource extends Resource
     protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Schema $schema): Schema
-{
-    return $schema
-        ->components([
+    {
+        return $schema->components([
+            Select::make('kelas_id')
+                ->label('Kelas')
+                ->options(fn () => Kelas::query()->orderBy('tingkat')->orderBy('nama')->pluck('nama', 'id'))
+                ->searchable()
+                ->preload()
+                ->live()
+                ->dehydrated(false)
+                ->afterStateUpdated(function (Set $set): void {
+                    $set('siswa_id', null);
+                    $set('materi_id', null);
+                })
+                ->required(),
 
             Select::make('siswa_id')
-    ->label('Siswa')
-    ->relationship('siswa','nama')
-    ->searchable()
-    ->live()
-    ->afterStateUpdated(function ($state, callable $set) {
-        $set('materi_id', null);
-    })
-    ->required(),
+                ->label('Siswa')
+                ->options(function (Get $get) {
+                    $kelasId = $get('kelas_id');
 
-        Select::make('materi_id')
-    ->label('Materi')
-    ->searchable()
-    ->required()
-    ->options(function (Get $get) {
+                    if (! $kelasId) {
+                        return [];
+                    }
 
-        $siswaId = $get('siswa_id');
+                    return Siswa::query()
+                        ->where('kelas_id', $kelasId)
+                        ->orderBy('nama')
+                        ->pluck('nama', 'id');
+                })
+                ->searchable()
+                ->live()
+                ->afterStateUpdated(fn (Set $set) => $set('materi_id', null))
+                ->required(),
 
-        if (!$siswaId) {
-            return \App\Models\Materi::pluck('nama', 'id');
-        }
+            Select::make('materi_id')
+                ->label('Materi')
+                ->options(function (Get $get, ?Kelulusan $record) {
+                    $siswaId = $get('siswa_id');
 
+                    if (! $siswaId) {
+                        return [];
+                    }
 
-        $materiSudahLulus = \App\Models\Kelulusan::where('siswa_id', $siswaId)
-            ->pluck('materi_id')
-            ->toArray();
+                    $siswa = Siswa::with('rombel')->find($siswaId);
 
+                    if (! $siswa?->rombel) {
+                        return [];
+                    }
 
-        return \App\Models\Materi::whereNotIn('id', $materiSudahLulus)
-            ->pluck('nama', 'id');
+                    $sudahDinilai = Kelulusan::query()
+                        ->where('siswa_id', $siswaId)
+                        ->when($record, fn ($query) => $query->whereKeyNot($record->getKey()))
+                        ->pluck('materi_id');
 
-    }),
+                    return Materi::query()
+                        ->where('tingkat', $siswa->rombel->tingkat)
+                        ->whereNotIn('id', $sudahDinilai)
+                        ->orderBy('nama')
+                        ->pluck('nama', 'id');
+                })
+                ->searchable()
+                ->required(),
 
             Select::make('user_id')
                 ->label('Penguji')
-                ->relationship('user','name')
+                ->relationship('user', 'name')
                 ->default(auth()->id())
-                ->required()
-                ->dehydrated(),
-
+                ->required(),
 
             DatePicker::make('tanggal_uji')
+                ->label('Tanggal Uji')
                 ->default(now())
                 ->required(),
 
-
-              TextInput::make('nilai')
+            TextInput::make('nilai')
                 ->label('Nilai')
                 ->numeric()
                 ->minValue(0)
                 ->maxValue(100)
                 ->required(),
 
-                Textarea::make('catatan')
-                    ->label('Catatan')
-                    ->rows(3)
-                    ->columnSpanFull(),
-
+            Textarea::make('catatan')
+                ->label('Catatan')
+                ->rows(3)
+                ->columnSpanFull(),
         ]);
-}
+    }
 
     public static function infolist(Schema $schema): Schema
     {

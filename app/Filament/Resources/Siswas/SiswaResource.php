@@ -75,7 +75,7 @@ public static function getPluralModelLabel(): string
                 ->searchable()
                 ->sortable(),
 
-            TextColumn::make('kelas')
+            TextColumn::make('rombel.nama')
                 ->label('Kelas')
                 ->searchable()
                 ->sortable(),
