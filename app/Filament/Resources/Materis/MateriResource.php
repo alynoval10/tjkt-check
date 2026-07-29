@@ -64,7 +64,21 @@ public static function getPluralModelLabel(): string
             ->columns([
                 TextColumn::make('kode')->label('Kode')->searchable()->sortable(),
                 TextColumn::make('nama')->label('Nama Materi')->searchable()->sortable(),
-                TextColumn::make('tingkat')->label('Tingkat')->badge()->placeholder('Belum diatur')->sortable(),
+                TextColumn::make('tingkat')
+    ->label('Tingkat')
+    ->badge()
+    ->icon(fn (string $state): string => match ($state) {
+        'X'   => 'heroicon-m-academic-cap',
+        'XI'  => 'heroicon-m-book-open',
+        'XII' => 'heroicon-m-trophy',
+        default => 'heroicon-m-tag',
+    })
+    ->color(fn (string $state): string => match ($state) {
+        'X'   => 'success',
+        'XI'  => 'info',
+        'XII' => 'warning',
+        default => 'gray',
+    }),
             ]);
     }
 
