@@ -24,7 +24,8 @@ class CekSiswaController extends Controller
         $siswas = Siswa::query()
             ->with('rombel:id,tingkat,nama')
             ->where(function ($query) use ($keyword) {
-                $query->where('nama', 'like', "%{$keyword}%")
+                $query
+                    ->where('nama', 'like', "%{$keyword}%")
                     ->orWhere('nis', 'like', "%{$keyword}%");
             })
             ->orderBy('nama')
@@ -45,16 +46,28 @@ class CekSiswaController extends Controller
         $materis = Materi::query()
             ->when(
                 $siswa->rombel,
-                fn ($query) => $query->where('tingkat', $siswa->rombel->tingkat),
+                fn ($query) => $query->where(
+                    'tingkat',
+                    $siswa->rombel->tingkat
+                ),
                 fn ($query) => $query->whereRaw('1 = 0')
             )
             ->orderBy('nama')
             ->get();
 
-        $totalMateri = $materis->count();
-        $lulus = $siswa->kelulusans
+        $penilaianByMateri = $siswa->kelulusans
             ->whereIn('materi_id', $materis->pluck('id'))
-            ->where('nilai', '>=', 75)
+            ->keyBy('materi_id');
+
+        $totalMateri = $materis->count();
+
+        $sudahDinilai = $penilaianByMateri->count();
+
+        $lulus = $penilaianByMateri
+            ->filter(
+                fn ($kelulusan) => ! is_null($kelulusan->nilai)
+                    && $kelulusan->nilai >= 75
+            )
             ->count();
 
         $persentase = $totalMateri > 0
@@ -64,7 +77,9 @@ class CekSiswaController extends Controller
         return view('detail-siswa', compact(
             'siswa',
             'materis',
+            'penilaianByMateri',
             'totalMateri',
+            'sudahDinilai',
             'lulus',
             'persentase'
         ));

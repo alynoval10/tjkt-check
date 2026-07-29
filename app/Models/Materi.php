@@ -12,6 +12,7 @@ class Materi extends Model
         'nama',
         'tingkat',
         'deskripsi',
+        'pdf_file',
     ];
 
     public function kelulusans(): HasMany
