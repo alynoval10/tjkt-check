@@ -53,15 +53,24 @@
                     </div>
                 </div>
 
-                <div class="hidden text-right sm:block">
-                    <p class="text-sm font-semibold">
-                        Program Keahlian TJKT
-                    </p>
+                <div class="flex items-center gap-4">
 
-                    <p class="text-xs text-blue-100">
-                        SMKN 1 Krangkeng
-                    </p>
-                </div>
+    <div class="hidden text-right sm:block">
+            <p class="text-sm font-semibold">
+                Program Keahlian TJKT
+            </p>
+
+            <p class="text-xs text-blue-100">
+                SMKN 1 Krangkeng
+            </p>
+        </div>
+
+        <a href="{{ url('/admin/login') }}"
+        class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-700 shadow transition hover:bg-blue-50">
+            Login Guru / Admin
+        </a>
+
+    </div>
             </div>
         </header>
 
