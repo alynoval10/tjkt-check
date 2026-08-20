@@ -7,7 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
-
+use Illuminate\Support\Facades\Storage;
 class MateriForm
 {
     public static function configure(Schema $schema): Schema
@@ -48,8 +48,7 @@ class MateriForm
                 ->maxSize(10240)
                 ->openable()
                 ->downloadable()
-                ->preserveFilenames()
                 ->columnSpanFull(),
-        ]);
+                    ]);
     }
 }
