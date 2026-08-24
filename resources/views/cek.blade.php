@@ -374,8 +374,8 @@
 
             try {
                 const url = new URL(
-                    "{{ url('/cek-siswa/search') }}",
-                    window.location.origin
+                      '/cek-siswa/search',
+                window.location.origin
                 );
 
                 url.searchParams.set('keyword', keyword);
