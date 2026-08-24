@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Siswa extends Model
 {
@@ -12,6 +13,7 @@ class Siswa extends Model
         'nis',
         'nama',
         'kelas_id',
+        'public_id',
     ];
 
     public function rombel(): BelongsTo
@@ -23,4 +25,13 @@ class Siswa extends Model
     {
         return $this->hasMany(Kelulusan::class);
     }
+    
+    protected static function booted(): void
+{
+    static::creating(function ($siswa) {
+        if (empty($siswa->public_id)) {
+            $siswa->public_id = (string) Str::ulid();
+        }
+    });
+}
 }

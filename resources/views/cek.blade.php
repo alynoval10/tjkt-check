@@ -332,7 +332,7 @@
 
                 return `
                     <a
-                        href="{{ url('/cek-siswa') }}/${siswa.id}"
+                        href="{{ url('/cek-siswa') }}/${siswa.public_id}"
                         class="group block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-400 hover:bg-blue-50 hover:shadow-md"
                     >
                         <div class="flex items-center gap-4">

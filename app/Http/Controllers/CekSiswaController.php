@@ -35,53 +35,53 @@ class CekSiswaController extends Controller
         return response()->json($siswas);
     }
 
-    public function detail($id)
-    {
-        $siswa = Siswa::with([
-            'rombel',
-            'kelulusans.materi',
-            'kelulusans.user',
-        ])->findOrFail($id);
+public function detail($publicId)
+{
+    $siswa = Siswa::with([
+        'rombel',
+        'kelulusans.materi',
+        'kelulusans.user',
+    ])->where('public_id', $publicId)->firstOrFail();
 
-        $materis = Materi::query()
-            ->when(
-                $siswa->rombel,
-                fn ($query) => $query->where(
-                    'tingkat',
-                    $siswa->rombel->tingkat
-                ),
-                fn ($query) => $query->whereRaw('1 = 0')
-            )
-            ->orderBy('nama')
-            ->get();
+    $materis = Materi::query()
+        ->when(
+            $siswa->rombel,
+            fn ($query) => $query->where(
+                'tingkat',
+                $siswa->rombel->tingkat
+            ),
+            fn ($query) => $query->whereRaw('1 = 0')
+        )
+        ->orderBy('nama')
+        ->get();
 
-        $penilaianByMateri = $siswa->kelulusans
-            ->whereIn('materi_id', $materis->pluck('id'))
-            ->keyBy('materi_id');
+    $penilaianByMateri = $siswa->kelulusans
+        ->whereIn('materi_id', $materis->pluck('id'))
+        ->keyBy('materi_id');
 
-        $totalMateri = $materis->count();
+    $totalMateri = $materis->count();
 
-        $sudahDinilai = $penilaianByMateri->count();
+    $sudahDinilai = $penilaianByMateri->count();
 
-        $lulus = $penilaianByMateri
-            ->filter(
-                fn ($kelulusan) => ! is_null($kelulusan->nilai)
-                    && $kelulusan->nilai >= 75
-            )
-            ->count();
+    $lulus = $penilaianByMateri
+        ->filter(
+            fn ($kelulusan) => ! is_null($kelulusan->nilai)
+                && $kelulusan->nilai >= 75
+        )
+        ->count();
 
-        $persentase = $totalMateri > 0
-            ? round(($lulus / $totalMateri) * 100)
-            : 0;
+    $persentase = $totalMateri > 0
+        ? round(($lulus / $totalMateri) * 100)
+        : 0;
 
-        return view('detail-siswa', compact(
-            'siswa',
-            'materis',
-            'penilaianByMateri',
-            'totalMateri',
-            'sudahDinilai',
-            'lulus',
-            'persentase'
-        ));
-    }
+    return view('detail-siswa', compact(
+        'siswa',
+        'materis',
+        'penilaianByMateri',
+        'totalMateri',
+        'sudahDinilai',
+        'lulus',
+        'persentase'
+    ));
+}
 }

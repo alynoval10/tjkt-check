@@ -21,6 +21,5 @@ Route::get('/cek-siswa', [CekSiswaController::class, 'index'])
 Route::get('/cek-siswa/search', [CekSiswaController::class, 'search'])
     ->name('cek-siswa.search');
 
-Route::get('/cek-siswa/{id}', [CekSiswaController::class, 'detail'])
-    ->whereNumber('id')
+Route::get('/cek-siswa/{publicId}', [CekSiswaController::class, 'detail'])
     ->name('cek-siswa.detail');
