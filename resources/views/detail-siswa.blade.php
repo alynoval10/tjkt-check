@@ -287,9 +287,51 @@
                 </p>
             </div>
 
+            @php
+                /*
+                |--------------------------------------------------------------------------
+                | Urutan Materi
+                |--------------------------------------------------------------------------
+                | 1. Lulus
+                | 2. Sudah diuji tetapi belum lulus
+                | 3. Belum diuji
+                |
+                | Jika status sama, urut berdasarkan nama materi.
+                */
+
+                $materisUrut = collect($materis ?? [])
+                    ->sortBy(function ($materi) use ($penilaianByMateri, $siswa) {
+
+                        $kelulusan = isset($penilaianByMateri)
+                            ? $penilaianByMateri->get($materi->id)
+                            : $siswa->kelulusans
+                                ->where('materi_id', $materi->id)
+                                ->first();
+
+                        if (
+                            $kelulusan
+                            && ! is_null($kelulusan->nilai)
+                            && $kelulusan->nilai >= 75
+                        ) {
+                            $urutanStatus = 1;
+                        } elseif ($kelulusan) {
+                            $urutanStatus = 2;
+                        } else {
+                            $urutanStatus = 3;
+                        }
+
+                        return sprintf(
+                            '%d-%s',
+                            $urutanStatus,
+                            mb_strtolower($materi->nama ?? '')
+                        );
+                    })
+                    ->values();
+            @endphp
+
             <div class="space-y-4">
 
-                @forelse ($materis ?? [] as $materi)
+                @forelse ($materisUrut as $materi)
 
                     @php
                         $kelulusan = isset($penilaianByMateri)
