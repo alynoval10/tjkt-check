@@ -35,53 +35,93 @@ class CekSiswaController extends Controller
         return response()->json($siswas);
     }
 
-public function detail($publicId)
-{
-    $siswa = Siswa::with([
-        'rombel',
-        'kelulusans.materi',
-        'kelulusans.user',
-    ])->where('public_id', $publicId)->firstOrFail();
+    public function detail($publicId)
+    {
+        $siswa = Siswa::with([
+            'rombel',
+            'kelulusans.materi',
+            'kelulusans.user',
+        ])
+            ->where('public_id', $publicId)
+            ->firstOrFail();
 
-    $materis = Materi::query()
-        ->when(
-            $siswa->rombel,
-            fn ($query) => $query->where(
-                'tingkat',
-                $siswa->rombel->tingkat
-            ),
-            fn ($query) => $query->whereRaw('1 = 0')
-        )
-        ->orderBy('nama')
-        ->get();
+        $materis = Materi::query()
+            ->when(
+                $siswa->rombel,
+                fn ($query) => $query->where(
+                    'tingkat',
+                    $siswa->rombel->tingkat
+                ),
+                fn ($query) => $query->whereRaw('1 = 0')
+            )
+            ->orderBy('nama')
+            ->get();
 
-    $penilaianByMateri = $siswa->kelulusans
-        ->whereIn('materi_id', $materis->pluck('id'))
-        ->keyBy('materi_id');
+        $penilaianByMateri = $siswa->kelulusans
+            ->whereIn('materi_id', $materis->pluck('id'))
+            ->keyBy('materi_id');
 
-    $totalMateri = $materis->count();
+        /*
+        |--------------------------------------------------------------------------
+        | Urutkan materi
+        |--------------------------------------------------------------------------
+        | 1. Materi LULUS (nilai >= 75)
+        | 2. Materi yang sudah dinilai tapi belum lulus
+        | 3. Materi yang belum diuji
+        |
+        | Dalam kelompok yang sama tetap diurutkan berdasarkan nama materi.
+        */
+        $materis = $materis
+            ->sortBy(function ($materi) use ($penilaianByMateri) {
+                $penilaian = $penilaianByMateri->get($materi->id);
 
-    $sudahDinilai = $penilaianByMateri->count();
+                if (
+                    $penilaian &&
+                    ! is_null($penilaian->nilai) &&
+                    $penilaian->nilai >= 75
+                ) {
+                    $status = 1; // Lulus
+                } elseif (
+                    $penilaian &&
+                    ! is_null($penilaian->nilai)
+                ) {
+                    $status = 2; // Sudah diuji tetapi belum lulus
+                } else {
+                    $status = 3; // Belum diuji
+                }
 
-    $lulus = $penilaianByMateri
-        ->filter(
-            fn ($kelulusan) => ! is_null($kelulusan->nilai)
-                && $kelulusan->nilai >= 75
-        )
-        ->count();
+                return sprintf(
+                    '%d-%s',
+                    $status,
+                    strtolower($materi->nama)
+                );
+            })
+            ->values();
 
-    $persentase = $totalMateri > 0
-        ? round(($lulus / $totalMateri) * 100)
-        : 0;
+        $totalMateri = $materis->count();
 
-    return view('detail-siswa', compact(
-        'siswa',
-        'materis',
-        'penilaianByMateri',
-        'totalMateri',
-        'sudahDinilai',
-        'lulus',
-        'persentase'
-    ));
-}
+        $sudahDinilai = $penilaianByMateri->count();
+
+        $lulus = $penilaianByMateri
+            ->filter(
+                fn ($kelulusan) =>
+                    ! is_null($kelulusan->nilai)
+                    && $kelulusan->nilai >= 75
+            )
+            ->count();
+
+        $persentase = $totalMateri > 0
+            ? round(($lulus / $totalMateri) * 100)
+            : 0;
+
+        return view('detail-siswa', compact(
+            'siswa',
+            'materis',
+            'penilaianByMateri',
+            'totalMateri',
+            'sudahDinilai',
+            'lulus',
+            'persentase'
+        ));
+    }
 }
