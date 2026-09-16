@@ -19,17 +19,20 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use UnitEnum;
 
 class MateriResource extends Resource
 {
     protected static ?string $model = Materi::class;
+    // Navigasi sidebar: menu ketiga dalam grup Data Akademik.
+    protected static string|UnitEnum|null $navigationGroup = 'Data Akademik';
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationLabel = 'Materi';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
 protected static ?string $modelLabel = 'Materi';
 
 protected static ?string $pluralModelLabel = 'Materi';
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'nama';
 

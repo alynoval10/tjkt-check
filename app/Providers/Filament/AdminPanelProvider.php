@@ -27,7 +27,14 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            // Identitas aplikasi pada panel dan halaman login.
+            ->brandName('TJKT CHECK')
             ->login(Login::class)
+            // Urutan grup sidebar untuk pengelolaan data dan penilaian.
+            ->navigationGroups([
+                'Data Akademik',
+                'Penilaian',
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -46,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 in: app_path('Filament/Widgets'),
                 for: 'App\Filament\Widgets'
             )
+            // Daftar widget eksplisit tetap kosong sesuai konfigurasi dashboard.
             ->widgets([])
             ->middleware([
                 EncryptCookies::class,

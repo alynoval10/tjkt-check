@@ -15,15 +15,21 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class KelasResource extends Resource
 {
-    protected static ?string $model = Kelas::class;
+    // Navigasi sidebar: menu pertama dalam grup Data Akademik.
+    protected static string|UnitEnum|null $navigationGroup = 'Data Akademik';
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationLabel = 'Kelas';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+
+    // Model dan label yang digunakan pada halaman Kelas.
+    protected static ?string $model = Kelas::class;
     protected static ?string $modelLabel = 'Kelas';
     protected static ?string $pluralModelLabel = 'Kelas';
     protected static ?string $recordTitleAttribute = 'nama';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
     {

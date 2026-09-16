@@ -26,17 +26,20 @@ use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\Materi;
 use Filament\Forms\Components\ToggleButtons;
+use UnitEnum;
 
 class KelulusanResource extends Resource
 {
     protected static ?string $model = Kelulusan::class;
+    // Navigasi sidebar: Kelulusan tampil sebelum Penilaian Massal.
+    protected static string|UnitEnum|null $navigationGroup = 'Penilaian';
+    protected static ?int $navigationSort = 4;
     protected static ?string $navigationLabel = 'Kelulusan';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCheckBadge;
 
     protected static ?string $modelLabel = 'Kelulusan';
     
     protected static ?string $pluralModelLabel = 'Kelulusan';
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'id';
 

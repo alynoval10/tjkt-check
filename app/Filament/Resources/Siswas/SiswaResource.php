@@ -21,18 +21,21 @@ use App\Exports\SiswaExport;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\FileUpload;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use UnitEnum;
 
 
 class SiswaResource extends Resource
 {
     protected static ?string $model = Siswa::class;
+    // Navigasi sidebar: menu kedua dalam grup Data Akademik.
+    protected static string|UnitEnum|null $navigationGroup = 'Data Akademik';
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'Siswa';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     protected static ?string $modelLabel = 'Siswa';
 
     protected static ?string $pluralModelLabel = 'Siswa';
-
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'nama';
 
