@@ -10,6 +10,28 @@
             Status penguasaan kompetensi seluruh siswa dalam satu kelas.
         </x-slot>
 
+        {{-- Filter lokal matriks; kelas mengikuti Filter Dashboard. --}}
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:16px">
+            <div style="flex:1;min-width:180px">
+                <label for="rekap-materi">Materi</label>
+                <x-filament::input.wrapper>
+                    <x-filament::input.select id="rekap-materi" wire:model.live="materiId" :disabled="! $kelasIdAktif">
+                        <option value="">Semua materi</option>
+                        @foreach ($materiOptions as $id => $nama)
+                            <option value="{{ $id }}">{{ $nama }}</option>
+                        @endforeach
+                    </x-filament::input.select>
+                </x-filament::input.wrapper>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px">
+                <input type="checkbox" wire:model.live="hanyaRemedial">
+                Hanya siswa perlu remedial
+            </label>
+            <x-filament::button wire:click="exportExcel" wire:loading.attr="disabled" icon="heroicon-o-arrow-down-tray" :disabled="empty($siswas) || empty($materis)">
+                Ekspor Excel
+            </x-filament::button>
+        </div>
+
         @if (! $kelasIdAktif)
 
             <p>
@@ -25,7 +47,7 @@
         @elseif (empty($siswas))
 
             <p>
-                Belum ada siswa di kelas {{ $namaKelas }}.
+                {{ $hanyaRemedial ? 'Tidak ada siswa yang perlu remedial pada filter ini.' : 'Belum ada siswa di kelas '.$namaKelas.'.' }}
             </p>
 
         @else
@@ -114,6 +136,8 @@
                                 Progres
                             </th>
 
+                            <th style="text-align:left;padding:12px;min-width:200px">Materi Remedial</th>
+
                         </tr>
 
                     </thead>
@@ -132,6 +156,7 @@
                                     "
                                 >
                                     {{ $siswa['nama'] }}
+                                    <div style="font-size:12px;font-weight:400">{{ $siswa['nis'] }}</div>
                                 </td>
 
                                 @foreach ($materis as $materi)
@@ -200,6 +225,9 @@
 
                                 </td>
 
+                                <td style="padding:12px;border-bottom:1px solid rgba(128,128,128,.15)">
+                                    {{ implode(', ', $siswa['remedial']) ?: '-' }}
+                                </td>
                             </tr>
 
                         @endforeach

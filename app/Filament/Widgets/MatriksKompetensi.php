@@ -5,6 +5,9 @@ namespace App\Filament\Widgets;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Siswa;
+use App\Exports\RekapKompetensiExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\Widget;
 
@@ -28,6 +31,12 @@ class MatriksKompetensi extends Widget
 
     public array $siswas = [];
 
+    public ?int $materiId = null;
+
+    public bool $hanyaRemedial = false;
+
+    public array $materiOptions = [];
+
     public function mount(): void
     {
         $this->muatData();
@@ -35,7 +44,31 @@ class MatriksKompetensi extends Widget
 
     public function updatedPageFilters(): void
     {
+        $this->materiId = null;
         $this->muatData();
+    }
+
+    // Filter mengubah matriks dan data yang akan diekspor secara bersamaan.
+    public function updatedMateriId(): void
+    {
+        $this->muatData();
+    }
+
+    public function updatedHanyaRemedial(): void
+    {
+        $this->muatData();
+    }
+
+    public function exportExcel(): BinaryFileResponse
+    {
+        // Hitung ulang dari database agar ekspor tidak mempercayai data publik widget.
+        $this->muatData();
+        abort_unless($this->kelasIdAktif && $this->materis && $this->siswas, 422, 'Tidak ada data untuk diekspor.');
+
+        return Excel::download(
+            new RekapKompetensiExport($this->namaKelas, $this->materis, $this->siswas),
+            'rekap-kompetensi-kelas-'.$this->kelasIdAktif.'.xlsx'
+        );
     }
 
     protected function muatData(): void
@@ -64,6 +97,11 @@ class MatriksKompetensi extends Widget
             ->orderBy('nama')
             ->get();
 
+        $this->materiOptions = $materis->pluck('nama', 'id')->all();
+        if ($this->materiId) {
+            $materis = $materis->where('id', $this->materiId);
+        }
+
         $materiIds = $materis->pluck('id');
 
         $siswas = Siswa::query()
@@ -90,6 +128,7 @@ class MatriksKompetensi extends Widget
 
                 $matrix = [];
                 $jumlahLulus = 0;
+                $remedial = [];
 
                 foreach ($materis as $materi) {
                     $kelulusan = $penilaianByMateri->get($materi->id);
@@ -104,6 +143,7 @@ class MatriksKompetensi extends Widget
                     } else {
                         $status = 'belum_lulus';
                         $nilai = $kelulusan->nilai;
+                        $remedial[] = $materi->nama;
                     }
 
                     $matrix[$materi->id] = [
@@ -119,10 +159,13 @@ class MatriksKompetensi extends Widget
                 return [
                     'id' => $siswa->id,
                     'nama' => $siswa->nama,
+                    'nis' => $siswa->nis,
                     'matrix' => $matrix,
                     'progres' => $progres,
+                    'remedial' => $remedial,
                 ];
             })
+            ->filter(fn ($siswa) => ! $this->hanyaRemedial || count($siswa['remedial']) > 0)
             ->values()
             ->toArray();
     }
@@ -134,5 +177,6 @@ class MatriksKompetensi extends Widget
         $this->tingkatKelas = null;
         $this->materis = [];
         $this->siswas = [];
+        $this->materiOptions = [];
     }
 }
