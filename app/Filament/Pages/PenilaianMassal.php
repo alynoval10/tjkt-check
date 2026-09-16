@@ -11,6 +11,8 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use UnitEnum;
 
 class PenilaianMassal extends Page
@@ -47,6 +49,7 @@ class PenilaianMassal extends Page
 
     public function updatedKelasId(): void
     {
+        $this->resetValidation();
         $this->materiId = null;
         $this->nilai = [];
         $this->catatan = [];
@@ -73,6 +76,7 @@ class PenilaianMassal extends Page
 
     public function updatedMateriId(): void
     {
+        $this->resetValidation();
         $this->loadExistingData();
     }
 
@@ -122,44 +126,53 @@ class PenilaianMassal extends Page
             return;
         }
 
-        $jumlahDisimpan = 0;
+        // Validasi seluruh isian sebelum penulisan pertama ke database.
+        $kelas = Kelas::find($this->kelasId);
+        $this->validate([
+            'kelasId' => ['required', Rule::exists('kelas', 'id')],
+            'materiId' => ['required', Rule::exists('materis', 'id')->where('tingkat', $kelas?->tingkat)],
+            'tanggalUji' => ['required', 'date_format:Y-m-d'],
+            'nilai' => ['array'],
+            'nilai.*' => ['nullable', 'integer', 'between:0,100'],
+            'catatan' => ['array'],
+            'catatan.*' => ['nullable', 'string', 'max:5000'],
+        ], [
+            'nilai.*.integer' => 'Nilai harus berupa bilangan bulat.',
+            'nilai.*.between' => 'Nilai harus antara 0 sampai 100.',
+            'tanggalUji.date_format' => 'Tanggal uji tidak valid.',
+            'materiId.exists' => 'Materi tidak sesuai dengan tingkat kelas.',
+            'catatan.*.max' => 'Catatan maksimal 5000 karakter.',
+        ]);
 
-        foreach ($this->siswas as $siswa) {
-            $nilai = $this->nilai[$siswa->id] ?? null;
+        // Ambil ulang anggota kelas; jangan mengandalkan daftar dari browser.
+        $siswas = Siswa::where('kelas_id', $this->kelasId)->get();
+        $dinilai = $siswas->filter(fn ($siswa) => isset($this->nilai[$siswa->id]) && $this->nilai[$siswa->id] !== '');
 
-            if ($nilai === '' || is_null($nilai)) {
-                continue;
-            }
+        if ($dinilai->isEmpty()) {
+            Notification::make()->title('Belum ada nilai untuk disimpan')->warning()->send();
 
-            $nilai = (int) $nilai;
-
-            if ($nilai < 0 || $nilai > 100) {
-                Notification::make()
-                    ->title('Nilai tidak valid')
-                    ->body(
-                        "Nilai {$siswa->nama} harus antara 0 sampai 100."
-                    )
-                    ->danger()
-                    ->send();
-
-                return;
-            }
-
-            Kelulusan::updateOrCreate(
-                [
-                    'siswa_id' => $siswa->id,
-                    'materi_id' => $this->materiId,
-                ],
-                [
-                    'user_id' => auth()->id(),
-                    'tanggal_uji' => $this->tanggalUji,
-                    'nilai' => $nilai,
-                    'catatan' => $this->catatan[$siswa->id] ?? null,
-                ]
-            );
-
-            $jumlahDisimpan++;
+            return;
         }
+
+        // Semua baris berhasil bersama, atau seluruh perubahan dibatalkan.
+        DB::transaction(function () use ($dinilai): void {
+            foreach ($dinilai as $siswa) {
+                Kelulusan::updateOrCreate(
+                    [
+                        'siswa_id' => $siswa->id,
+                        'materi_id' => $this->materiId,
+                    ],
+                    [
+                        'user_id' => auth()->id(),
+                        'tanggal_uji' => $this->tanggalUji,
+                        'nilai' => (int) $this->nilai[$siswa->id],
+                        'catatan' => $this->catatan[$siswa->id] ?? null,
+                    ]
+                );
+            }
+        });
+
+        $jumlahDisimpan = $dinilai->count();
 
         Notification::make()
             ->title('Penilaian berhasil disimpan')
@@ -168,6 +181,7 @@ class PenilaianMassal extends Page
             ->send();
 
         $this->loadExistingData();
+        $this->dispatch('penilaian-disimpan');
     }
 
     public function getKelasOptionsProperty(): array

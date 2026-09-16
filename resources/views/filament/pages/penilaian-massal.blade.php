@@ -1,6 +1,40 @@
 <x-filament-panels::page>
 
-    <div class="space-y-6">
+    {{-- Lindungi isian lokal, termasuk yang belum dikirim ke Livewire. --}}
+    <div class="space-y-6"
+        x-data="{
+            dirty: false,
+            confirmLeave() {
+                return !this.dirty || window.confirm('Perubahan belum disimpan. Tinggalkan perubahan?');
+            },
+            changeSelection(event) {
+                if (!event.target.matches('select')) return;
+                if (!this.confirmLeave()) {
+                    event.stopImmediatePropagation();
+                    event.target.value = event.target.getAttribute('wire:model.live') === 'kelasId' ? ($wire.kelasId ?? '') : ($wire.materiId ?? '');
+                    return;
+                }
+                this.dirty = false;
+            }
+        }"
+        x-on:input="if (!$event.target.matches('select')) dirty = true"
+        x-on:change.capture="changeSelection($event)"
+        x-on:penilaian-disimpan.window="dirty = false"
+        x-on:beforeunload.window="if (dirty) { $event.preventDefault(); $event.returnValue = ''; }"
+        x-on:livewire:navigate.document="if (!confirmLeave()) $event.preventDefault()"
+    >
+        @if ($errors->any())
+            <div role="alert" class="text-danger-600">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        {{-- Kunci isian saat permintaan berjalan agar nilai tidak berubah ketika disimpan. --}}
+        <fieldset class="space-y-6" style="min-width:0" wire:loading.attr="disabled">
 
         <x-filament::section>
 
@@ -232,6 +266,7 @@
                                         >
 
                                             <div
+                                                x-on:click="if ($event.target.closest('button')) dirty = true"
                                                 style="
                                                     display:flex;
                                                     flex-wrap:wrap;
@@ -311,9 +346,11 @@
                         <x-filament::button
                             type="button"
                             wire:click="simpan"
+                            wire:loading.attr="disabled"
                             icon="heroicon-o-check"
                         >
-                            Simpan Semua Penilaian
+                            <span wire:loading.remove wire:target="simpan">Simpan Semua Penilaian</span>
+                            <span wire:loading wire:target="simpan">Menyimpan...</span>
                         </x-filament::button>
 
                     </div>
@@ -324,6 +361,7 @@
 
         @endif
 
+        </fieldset>
     </div>
 
 </x-filament-panels::page>
