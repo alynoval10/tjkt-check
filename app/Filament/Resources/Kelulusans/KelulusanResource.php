@@ -25,6 +25,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\Materi;
+use Filament\Forms\Components\ToggleButtons;
 
 class KelulusanResource extends Resource
 {
@@ -121,11 +122,44 @@ class KelulusanResource extends Resource
                 ->maxValue(100)
                 ->required(),
 
-            Textarea::make('catatan')
-                ->label('Catatan')
-                ->rows(3)
-                ->columnSpanFull(),
-        ]);
+                    ToggleButtons::make('saran_catatan')
+            ->label('Saran Catatan')
+            ->options([
+                'Kompetensi sudah dikuasai dengan baik.' =>
+                    'Kompetensi sudah dikuasai dengan baik.',
+
+                'Mampu menyelesaikan praktik secara mandiri.' =>
+                    'Mampu menyelesaikan praktik secara mandiri.',
+
+                'Perlu meningkatkan ketelitian dalam praktik.' =>
+                    'Perlu meningkatkan ketelitian dalam praktik.',
+
+                'Perlu latihan kembali pada bagian konfigurasi.' =>
+                    'Perlu latihan kembali pada bagian konfigurasi.',
+
+                'Perlu bimbingan dan penguatan materi.' =>
+                    'Perlu bimbingan dan penguatan materi.',
+
+                'Belum mampu menyelesaikan praktik secara mandiri.' =>
+                    'Belum mampu menyelesaikan praktik secara mandiri.',
+            ])
+            ->inline()
+            ->dehydrated(false)
+            ->live()
+            ->afterStateUpdated(function ($state, Set $set): void {
+                if ($state) {
+                    $set('catatan', $state);
+                }
+            })
+            ->columnSpanFull(),
+
+        Textarea::make('catatan')
+            ->label('Catatan')
+            ->placeholder('Pilih saran di atas atau tulis catatan secara manual...')
+            ->rows(3)
+            ->nullable()
+            ->columnSpanFull(),
+                ]);
     }
 
     public static function infolist(Schema $schema): Schema
