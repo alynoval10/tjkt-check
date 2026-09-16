@@ -35,7 +35,7 @@
         @endif
 
         {{-- Kunci isian saat permintaan berjalan agar nilai tidak berubah ketika disimpan. --}}
-        <fieldset class="space-y-6" style="min-width:0" wire:loading.attr="disabled" wire:target="simpan,kelasId,materiId,isiSaranCatatan">
+        <fieldset class="space-y-6" style="min-width:0" wire:loading.attr="disabled" wire:target="simpan,mountAction,callMountedAction,kelasId,materiId,isiSaranCatatan">
 
         <x-filament::section>
 
@@ -369,15 +369,7 @@
                         "
                     >
 
-                        <x-filament::button
-                            type="button"
-                            wire:click="simpan"
-                            wire:loading.attr="disabled"
-                            icon="heroicon-o-check"
-                        >
-                            <span wire:loading.remove wire:target="simpan">Simpan Semua Penilaian</span>
-                            <span wire:loading wire:target="simpan">Menyimpan...</span>
-                        </x-filament::button>
+                        {{ $this->konfirmasiSimpanAction }}
 
                     </div>
 

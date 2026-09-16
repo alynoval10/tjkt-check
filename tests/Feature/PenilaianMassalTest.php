@@ -124,4 +124,35 @@ class PenilaianMassalTest extends TestCase
             ->assertSet('pencarian', '')->assertSet('filterStatus', 'semua')
             ->assertSet('statusTersimpan', []);
     }
+
+    public function test_confirmation_counts_hidden_scores_and_cancel_keeps_drafts(): void
+    {
+        [$page, $first, $second] = $this->assessment();
+        $page->set('nilai', [$first->id => 0, $second->id => 80])
+            ->set('pencarian', 'Ani')->mountAction('konfirmasiSimpan')->assertActionMounted('konfirmasiSimpan');
+        $summary = $page->instance()->getMountedAction()->getModalContent();
+        $this->assertSame('X TJKT 1', $summary->getData()['kelas']);
+        $this->assertSame('Jaringan', $summary->getData()['materi']);
+        $this->assertSame(2, $summary->getData()['jumlah']);
+        $this->assertSame(1, $summary->getData()['tersembunyi']);
+        $this->assertStringContainsString('Nilai akan diproses', $summary->render());
+        $this->assertDatabaseCount('kelulusans', 0);
+
+        $page->call('unmountAction')->assertSet('nilai.'.$first->id, 0)
+            ->assertSet('nilai.'.$second->id, 80);
+        $this->assertDatabaseCount('kelulusans', 0);
+
+        $page->mountAction('konfirmasiSimpan')->callMountedAction()->assertHasNoErrors();
+        $this->assertDatabaseCount('kelulusans', 2);
+    }
+
+    public function test_confirmation_does_not_bypass_validation(): void
+    {
+        [$page, $first, $second] = $this->assessment();
+        $page->set('nilai', [$first->id => 101, $second->id => ''])
+            ->mountAction('konfirmasiSimpan');
+        $this->assertSame(1, $page->instance()->getMountedAction()->getModalContent()->getData()['kosong']);
+        $page->callMountedAction()->assertHasErrors(['nilai.'.$first->id]);
+        $this->assertDatabaseCount('kelulusans', 0);
+    }
 }

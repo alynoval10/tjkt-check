@@ -7,6 +7,7 @@ use App\Models\Kelulusan;
 use App\Models\Materi;
 use App\Models\Siswa;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
@@ -209,6 +210,39 @@ class PenilaianMassal extends Page
 
         $this->loadExistingData();
         $this->dispatch('penilaian-disimpan');
+    }
+
+    // Modal bawaan Filament membuka ringkasan tanpa menulis ke database.
+    public function konfirmasiSimpanAction(): Action
+    {
+        return Action::make('konfirmasiSimpan')
+            ->label('Simpan Semua Penilaian')
+            ->icon('heroicon-o-check')
+            ->requiresConfirmation()
+            ->modalHeading('Simpan Penilaian?')
+            ->modalWidth('lg')
+            ->modalDescription(null)
+            ->modalSubmitActionLabel('Ya, Simpan Semua')
+            ->modalCancelActionLabel('Kembali Periksa')
+            ->modalContent(function () {
+                $kelas = Kelas::find($this->kelasId);
+                $materi = Materi::find($this->materiId);
+                $ids = Siswa::where('kelas_id', $this->kelasId)->pluck('id');
+                $diisi = $ids->filter(fn ($id) => isset($this->nilai[$id]) && $this->nilai[$id] !== '');
+                $terlihat = $this->siswasTampil->pluck('id');
+                $tersembunyi = $diisi->diff($terlihat)->count();
+                $kosong = $ids->count() - $diisi->count();
+
+                return view('filament.pages.konfirmasi-penilaian', [
+                    'kelas' => $kelas?->nama ?? '-',
+                    'materi' => $materi?->nama ?? '-',
+                    'tanggal' => $this->tanggalUji,
+                    'jumlah' => $diisi->count(),
+                    'tersembunyi' => $tersembunyi,
+                    'kosong' => $kosong,
+                ]);
+            })
+            ->action(fn () => $this->simpan());
     }
 
     public function getKelasOptionsProperty(): array
