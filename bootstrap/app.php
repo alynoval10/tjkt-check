@@ -11,6 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Route cetak memakai halaman login panel yang sudah tersedia.
+        $middleware->redirectGuestsTo(fn () => route('filament.admin.auth.login'));
         $middleware->trustProxies(
             at: '*'
         );

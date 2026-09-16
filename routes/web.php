@@ -2,8 +2,13 @@
 
 use App\Exports\SiswaTemplateExport;
 use App\Http\Controllers\CekSiswaController;
+use App\Http\Controllers\KartuKompetensiController;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
+
+// Kartu cetak hanya tersedia bagi pengguna yang sudah login.
+Route::get('/siswa/{siswa}/kartu-kompetensi', KartuKompetensiController::class)
+    ->middleware('auth')->name('siswa.kartu-kompetensi');
 
 Route::get('/', [CekSiswaController::class, 'index'])
     ->name('home');
