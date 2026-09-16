@@ -13,6 +13,7 @@ use Filament\Actions\Action;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KelulusanExport;
 use App\Models\Kelas;
+use App\Models\Kelulusan;
 
 class KelulusansTable
 {
@@ -119,6 +120,16 @@ class KelulusansTable
         ])
 
         ->recordActions([
+            // Riwayat hanya dibaca; koreksi tetap dilakukan melalui form penilaian.
+            Action::make('riwayat')
+                ->label('Riwayat')
+                ->icon('heroicon-o-clock')
+                ->modalHeading('Riwayat Penilaian')
+                ->modalSubmitAction(false)
+                ->modalCancelActionLabel('Tutup')
+                ->modalContent(fn (Kelulusan $record) => view('filament.kelulusan-riwayat', [
+                    'riwayat' => $record->riwayat()->orderByDesc('id')->get(),
+                ])),
             ViewAction::make(),
             EditAction::make(),
         ])

@@ -49,6 +49,7 @@ class PenilaianMassalTest extends TestCase
             ->call('simpan')->assertHasNoErrors();
 
         $this->assertDatabaseCount('kelulusans', 1);
+        $this->assertDatabaseCount('riwayat_penilaians', 1);
         $this->assertDatabaseHas('kelulusans', ['siswa_id' => $first->id, 'nilai' => 0]);
     }
 
@@ -75,6 +76,7 @@ class PenilaianMassalTest extends TestCase
         } catch (\RuntimeException $exception) {
             $this->assertSame('Simulated write failure', $exception->getMessage());
             $this->assertDatabaseCount('kelulusans', 0);
+            $this->assertDatabaseCount('riwayat_penilaians', 0);
         } finally {
             Kelulusan::flushEventListeners();
         }
