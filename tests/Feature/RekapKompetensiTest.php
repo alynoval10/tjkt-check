@@ -16,6 +16,37 @@ class RekapKompetensiTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_matrix_renders_new_parent_filter_without_update_hook(): void
+    {
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $this->actingAs(User::factory()->create());
+        $awal = Kelas::create(['nama' => 'X A', 'tingkat' => 'X']);
+        $tujuan = Kelas::create(['nama' => 'XI B', 'tingkat' => 'XI']);
+        $materiAwal = Materi::create(['kode' => 'X', 'nama' => 'Materi Awal', 'tingkat' => 'X']);
+        Materi::create(['kode' => 'XI', 'nama' => 'Materi Tujuan', 'tingkat' => 'XI']);
+        Siswa::create(['nis' => '01', 'nama' => 'Siswa Awal', 'kelas_id' => $awal->id]);
+        Siswa::create(['nis' => '02', 'nama' => 'Siswa Tujuan', 'kelas_id' => $tujuan->id]);
+        $widget = Livewire::test(MatriksKompetensi::class, ['pageFilters' => ['kelas_id' => $awal->id]])
+            ->set('materiId', $materiAwal->id)->instance();
+
+        // Simulasikan prop induk yang diganti saat hidrasi, tanpa updatedPageFilters.
+        $widget->pageFilters = ['kelas_id' => $tujuan->id];
+        $widget->render();
+        $this->assertSame('XI B', $widget->namaKelas);
+        $this->assertNull($widget->materiId);
+        $this->assertSame('Materi Tujuan', $widget->materis[0]['nama']);
+        $this->assertSame('Siswa Tujuan', $widget->siswas[0]['nama']);
+
+        $widget->pageFilters = ['kelas_id' => $awal->id];
+        $widget->render();
+        $this->assertSame('Siswa Awal', $widget->siswas[0]['nama']);
+
+        $widget->pageFilters = ['kelas_id' => 999999];
+        $widget->render();
+        $this->assertNull($widget->kelasIdAktif);
+        $this->assertSame([], $widget->siswas);
+    }
+
     public function test_filters_statuses_and_real_excel_output(): void
     {
         Filament::setCurrentPanel(Filament::getPanel('admin'));

@@ -37,15 +37,12 @@ class MatriksKompetensi extends Widget
 
     public array $materiOptions = [];
 
-    public function mount(): void
+    protected function getViewData(): array
     {
+        // Filter reaktif dari Dashboard diperbarui saat hidrasi, bukan updatedPageFilters.
         $this->muatData();
-    }
 
-    public function updatedPageFilters(): void
-    {
-        $this->materiId = null;
-        $this->muatData();
+        return [];
     }
 
     // Filter mengubah matriks dan data yang akan diekspor secara bersamaan.
@@ -86,6 +83,10 @@ class MatriksKompetensi extends Widget
             $this->resetData();
 
             return;
+        }
+
+        if ($this->kelasIdAktif !== $kelas->id) {
+            $this->materiId = null;
         }
 
         $this->kelasIdAktif = $kelas->id;
@@ -178,5 +179,6 @@ class MatriksKompetensi extends Widget
         $this->materis = [];
         $this->siswas = [];
         $this->materiOptions = [];
+        $this->materiId = null;
     }
 }
