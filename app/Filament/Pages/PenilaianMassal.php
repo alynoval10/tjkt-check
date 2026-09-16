@@ -35,6 +35,26 @@ class PenilaianMassal extends Page
 
     public array $catatan = [];
 
+    public string $pencarian = '';
+
+    public string $filterStatus = 'semua';
+
+    public array $statusTersimpan = [];
+
+    // Hanya memilih baris tampilan; array nilai dan catatan tetap utuh.
+    public function getSiswasTampilProperty(): Collection
+    {
+        $keyword = mb_strtolower(trim($this->pencarian));
+
+        return $this->siswas->filter(function ($siswa) use ($keyword) {
+            $cocokNama = $keyword === '' || str_contains(mb_strtolower($siswa->nama), $keyword)
+                || str_contains(mb_strtolower((string) $siswa->nis), $keyword);
+            $status = $this->statusTersimpan[$siswa->id] ?? 'belum_diuji';
+
+            return $cocokNama && ($this->filterStatus === 'semua' || $this->filterStatus === $status);
+        });
+    }
+
     public Collection $siswas;
 
     public Collection $materis;
@@ -49,6 +69,7 @@ class PenilaianMassal extends Page
 
     public function updatedKelasId(): void
     {
+        $this->reset('pencarian', 'filterStatus', 'statusTersimpan');
         $this->resetValidation();
         $this->materiId = null;
         $this->nilai = [];
@@ -76,12 +97,14 @@ class PenilaianMassal extends Page
 
     public function updatedMateriId(): void
     {
+        $this->reset('pencarian', 'filterStatus');
         $this->resetValidation();
         $this->loadExistingData();
     }
 
     protected function loadExistingData(): void
     {
+        $this->statusTersimpan = [];
         $this->nilai = [];
         $this->catatan = [];
 
@@ -104,6 +127,10 @@ class PenilaianMassal extends Page
 
             $this->nilai[$siswa->id] = $kelulusan->nilai;
             $this->catatan[$siswa->id] = $kelulusan->catatan;
+            // Status tetap stabil selama guru mengedit nilai yang belum disimpan.
+            $this->statusTersimpan[$siswa->id] = is_null($kelulusan->nilai)
+                ? 'belum_diuji'
+                : ($kelulusan->nilai >= 75 ? 'lulus' : 'remedial');
         }
     }
 

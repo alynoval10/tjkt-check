@@ -9,6 +9,7 @@
             },
             changeSelection(event) {
                 if (!event.target.matches('select')) return;
+                if (!['kelasId', 'materiId'].includes(event.target.getAttribute('wire:model.live'))) return;
                 if (!this.confirmLeave()) {
                     event.stopImmediatePropagation();
                     event.target.value = event.target.getAttribute('wire:model.live') === 'kelasId' ? ($wire.kelasId ?? '') : ($wire.materiId ?? '');
@@ -17,7 +18,7 @@
                 this.dirty = false;
             }
         }"
-        x-on:input="if (!$event.target.matches('select')) dirty = true"
+        x-on:input="if (!$event.target.matches('select') && !$event.target.closest('[data-filter-penilaian]')) dirty = true"
         x-on:change.capture="changeSelection($event)"
         x-on:penilaian-disimpan.window="dirty = false"
         x-on:beforeunload.window="if (dirty) { $event.preventDefault(); $event.returnValue = ''; }"
@@ -34,7 +35,7 @@
         @endif
 
         {{-- Kunci isian saat permintaan berjalan agar nilai tidak berubah ketika disimpan. --}}
-        <fieldset class="space-y-6" style="min-width:0" wire:loading.attr="disabled">
+        <fieldset class="space-y-6" style="min-width:0" wire:loading.attr="disabled" wire:target="simpan,kelasId,materiId,isiSaranCatatan">
 
         <x-filament::section>
 
@@ -167,6 +168,28 @@
 
                 @else
 
+                    {{-- Filter tidak menghapus isian siswa yang disembunyikan. --}}
+                    <div data-filter-penilaian style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px">
+                        <div style="flex:1;min-width:180px">
+                            <label for="cari-siswa-massal">Cari nama atau NIS</label>
+                            <x-filament::input.wrapper>
+                                <x-filament::input id="cari-siswa-massal" type="search" wire:model.live.debounce.350ms="pencarian" />
+                            </x-filament::input.wrapper>
+                        </div>
+                        <div style="flex:1;min-width:180px">
+                            <label for="status-siswa-massal">Status tersimpan</label>
+                            <x-filament::input.wrapper>
+                                <x-filament::input.select id="status-siswa-massal" wire:model.live="filterStatus">
+                                    <option value="semua">Semua</option>
+                                    <option value="belum_diuji">Belum Diuji</option>
+                                    <option value="remedial">Remedial</option>
+                                    <option value="lulus">Lulus</option>
+                                </x-filament::input.select>
+                            </x-filament::input.wrapper>
+                        </div>
+                    </div>
+                    <p role="status" style="margin-bottom:12px">{{ $this->siswasTampil->count() }} dari {{ $siswas->count() }} siswa</p>
+
                     <div style="overflow-x:auto;">
 
                         <table
@@ -216,7 +239,7 @@
 
                             <tbody>
 
-                                @foreach ($siswas as $siswa)
+                                @forelse ($this->siswasTampil as $siswa)
 
                                     <tr wire:key="siswa-{{ $siswa->id }}">
 
@@ -230,6 +253,7 @@
                                             "
                                         >
                                             {{ $siswa->nama }}
+                                            <div style="font-size:12px;font-weight:400">NIS: {{ $siswa->nis }}</div>
                                         </td>
 
 
@@ -326,7 +350,9 @@
 
                                     </tr>
 
-                                @endforeach
+                                @empty
+                                    <tr><td colspan="3" style="padding:16px;text-align:center">Tidak ada siswa yang cocok dengan pencarian dan status ini.</td></tr>
+                                @endforelse
 
                             </tbody>
 

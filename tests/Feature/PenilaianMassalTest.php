@@ -93,4 +93,35 @@ class PenilaianMassalTest extends TestCase
             ->assertSee('Pilih kelas')
             ->assertSeeHtml('disabled');
     }
+
+    public function test_search_and_status_filters_preserve_hidden_drafts(): void
+    {
+        [$page, $first, $second] = $this->assessment();
+        $page->set('nilai', [$first->id => 0, $second->id => 75])->call('simpan')
+            ->set('filterStatus', 'remedial')->assertSee('1 dari 2 siswa')
+            ->assertSee('NIS: 001')->assertDontSee('NIS: 002')
+            ->set('nilai.'.$first->id, 90)->set('catatan.'.$first->id, 'Perbaikan selesai')
+            ->set('pencarian', 'BUDI')->assertSee('0 dari 2 siswa')
+            ->assertSee('Tidak ada siswa yang cocok')
+            ->assertSet('nilai.'.$first->id, 90)
+            ->assertSet('catatan.'.$first->id, 'Perbaikan selesai')
+            ->set('filterStatus', 'semua')->assertSee('NIS: 002')->assertDontSee('NIS: 001')
+            ->set('pencarian', ' 001 ')->assertSee('NIS: 001')->assertDontSee('NIS: 002')
+            ->set('pencarian', 'Budi')->call('simpan')->assertHasNoErrors();
+
+        // Simpan Semua tetap mencakup isian pada baris yang sedang tersembunyi.
+        $this->assertDatabaseHas('kelulusans', ['siswa_id' => $first->id, 'nilai' => 90, 'catatan' => 'Perbaikan selesai']);
+        $page->set('pencarian', '')->set('filterStatus', 'lulus')->assertSee('2 dari 2 siswa')
+            ->set('filterStatus', 'belum_diuji')->assertSee('0 dari 2 siswa');
+    }
+
+    public function test_unassessed_filter_and_material_change_reset(): void
+    {
+        [$page, $first, $second] = $this->assessment();
+        $page->set('nilai', [$first->id => 74])->call('simpan')
+            ->set('filterStatus', 'belum_diuji')->assertSee('NIS: 002')->assertDontSee('NIS: 001')
+            ->set('pencarian', 'Budi')->set('materiId', null)
+            ->assertSet('pencarian', '')->assertSet('filterStatus', 'semua')
+            ->assertSet('statusTersimpan', []);
+    }
 }
