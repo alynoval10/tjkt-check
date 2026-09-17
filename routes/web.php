@@ -6,6 +6,9 @@ use App\Http\Controllers\KartuKompetensiController;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
 
+Route::get('/backup-download/{name}', \App\Http\Controllers\BackupDownloadController::class)
+    ->middleware('auth')->name('backup.download');
+
 // Kartu cetak hanya tersedia bagi pengguna yang sudah login.
 Route::get('/siswa/{siswa}/kartu-kompetensi', KartuKompetensiController::class)
     ->middleware('auth')->name('siswa.kartu-kompetensi');

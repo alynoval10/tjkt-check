@@ -10,7 +10,6 @@ use App\Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\View\PanelsRenderHook;
 
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -34,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Data Akademik',
                 'Penilaian',
+                'Pemeliharaan',
             ])
             ->colors([
                 'primary' => Color::Amber,
@@ -68,10 +68,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->renderHook(
-                PanelsRenderHook::SIDEBAR_FOOTER,
-                fn (): string => view('filament.footer')->render(),
-            );
+            ]);
     }
 }
