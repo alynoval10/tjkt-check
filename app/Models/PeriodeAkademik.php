@@ -3,68 +3,68 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Kelulusan extends Model
+class PeriodeAkademik extends Model
 {
     /*
     |--------------------------------------------------------------------------
     | Mass Assignment
     |--------------------------------------------------------------------------
-    | Menentukan field yang boleh diisi menggunakan create() / update().
     */
 
     protected $fillable = [
-        'siswa_id',
-        'materi_id',
-        'periode_akademik_id',
-        'user_id',
-        'tanggal_uji',
-        'nilai',
-        'catatan',
+        'tahun_ajaran',
+        'semester',
+        'is_active',
     ];
 
     /*
     |--------------------------------------------------------------------------
-    | Relasi Siswa
+    | Casting
     |--------------------------------------------------------------------------
     */
 
-    public function siswa()
+    protected function casts(): array
     {
-        return $this->belongsTo(Siswa::class);
+        return [
+            'is_active' => 'boolean',
+        ];
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Relasi Materi
+    | Relasi Kelulusan
     |--------------------------------------------------------------------------
     */
 
-    public function materi()
+    public function kelulusans(): HasMany
     {
-        return $this->belongsTo(Materi::class);
+        return $this->hasMany(Kelulusan::class);
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Relasi Penguji
+    | Periode Aktif
     |--------------------------------------------------------------------------
+    | Helper untuk mengambil periode yang sedang digunakan.
     */
 
-    public function user()
+    public static function aktif(): ?self
     {
-        return $this->belongsTo(User::class);
+        return static::query()
+            ->where('is_active', true)
+            ->first();
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Relasi Periode Akademik
+    | Nama Lengkap
     |--------------------------------------------------------------------------
-    | Menghubungkan hasil penilaian dengan tahun ajaran / semester tertentu.
     */
 
-    public function periodeAkademik()
+    public function getLabelAttribute(): string
     {
-        return $this->belongsTo(PeriodeAkademik::class);
+        return "{$this->tahun_ajaran} - {$this->semester}";
     }
 }
