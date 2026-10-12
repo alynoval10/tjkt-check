@@ -9,56 +9,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('kelulusans', function (Blueprint $table) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Hapus Unique Lama
-            |--------------------------------------------------------------------------
-            | Sebelumnya satu siswa hanya bisa memiliki satu penilaian untuk
-            | satu materi sepanjang waktu.
-            */
-
-            $table->dropUnique([
-                'siswa_id',
-                'materi_id',
-            ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | Unique Berdasarkan Periode
-            |--------------------------------------------------------------------------
-            | Sekarang materi yang sama boleh dinilai kembali pada semester /
-            | tahun ajaran yang berbeda.
-            */
-
-            $table->unique([
-                'siswa_id',
-                'materi_id',
-                'periode_akademik_id',
-            ]);
+            $table->foreignId('periode_akademik_id')
+                ->nullable()
+                ->constrained('periode_akademiks')
+                ->nullOnDelete();
         });
     }
 
     public function down(): void
     {
         Schema::table('kelulusans', function (Blueprint $table) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Kembalikan Struktur Lama
-            |--------------------------------------------------------------------------
-            */
-
-            $table->dropUnique([
-                'siswa_id',
-                'materi_id',
-                'periode_akademik_id',
-            ]);
-
-            $table->unique([
-                'siswa_id',
-                'materi_id',
-            ]);
+            $table->dropConstrainedForeignId('periode_akademik_id');
         });
     }
 };

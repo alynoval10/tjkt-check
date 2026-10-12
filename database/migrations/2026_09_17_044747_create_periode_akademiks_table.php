@@ -8,57 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('kelulusans', function (Blueprint $table) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Hapus Unique Lama
-            |--------------------------------------------------------------------------
-            | Sebelumnya satu siswa hanya bisa memiliki satu penilaian untuk
-            | satu materi sepanjang waktu.
-            */
-
-            $table->dropUnique([
-                'siswa_id',
-                'materi_id',
-            ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | Unique Berdasarkan Periode
-            |--------------------------------------------------------------------------
-            | Sekarang materi yang sama boleh dinilai kembali pada semester /
-            | tahun ajaran yang berbeda.
-            */
-
-            $table->unique([
-                'siswa_id',
-                'materi_id',
-                'periode_akademik_id',
-            ]);
+        Schema::create('periode_akademiks', function (Blueprint $table) {
+            $table->id();
+            $table->string('tahun_ajaran');
+            $table->string('semester');
+            $table->boolean('is_active')->default(false);
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::table('kelulusans', function (Blueprint $table) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Kembalikan Struktur Lama
-            |--------------------------------------------------------------------------
-            */
-
-            $table->dropUnique([
-                'siswa_id',
-                'materi_id',
-                'periode_akademik_id',
-            ]);
-
-            $table->unique([
-                'siswa_id',
-                'materi_id',
-            ]);
-        });
+        Schema::dropIfExists('periode_akademiks');
     }
 };
