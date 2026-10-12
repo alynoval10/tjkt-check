@@ -18,6 +18,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Login;
+use App\Models\SiteSetting;
+use Illuminate\Support\Facades\Storage;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -27,7 +29,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             // Identitas aplikasi pada panel dan halaman login.
-            ->brandName('TJKT CHECK')
+            ->brandName(fn () => SiteSetting::value('site_title', 'TJKT CHECK'))
+            ->brandLogo(fn () => ($logo = SiteSetting::value('site_logo'))
+                ? Storage::disk('public')->url($logo)
+                : null)
+            ->brandLogoHeight('2.5rem')
             ->login(Login::class)
             // Urutan grup sidebar untuk pengelolaan data dan penilaian.
             ->navigationGroups([

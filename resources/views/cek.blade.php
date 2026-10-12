@@ -1,3 +1,5 @@
+@php($appTitle = \App\Models\SiteSetting::value('site_title', 'TJKT CHECK'))
+@php($appLogo = \App\Models\SiteSetting::value('site_logo'))
 <!DOCTYPE html>
 <html lang="id">
 
@@ -14,7 +16,7 @@
         content="Portal monitoring kompetensi siswa TJKT"
     >
 
-    <title>Cek Kompetensi Siswa - TJKT CHECK</title>
+    <title>Cek Kompetensi Siswa - {{ $appTitle }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -38,13 +40,17 @@
             <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
 
                 <div class="flex items-center gap-3">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-xl font-bold ring-1 ring-white/20">
-                        T
-                    </div>
+                    @if ($appLogo)
+                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($appLogo) }}" alt="Logo {{ $appTitle }}" class="h-11 w-11 rounded-xl bg-white object-contain p-1">
+                    @else
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-xl font-bold ring-1 ring-white/20">
+                            {{ mb_strtoupper(mb_substr($appTitle, 0, 1)) }}
+                        </div>
+                    @endif
 
                     <div>
                         <h1 class="text-lg font-bold leading-tight sm:text-xl">
-                            TJKT CHECK
+                            {{ $appTitle }}
                         </h1>
 
                         <p class="text-xs text-blue-100 sm:text-sm">
@@ -272,7 +278,7 @@
         <footer class="border-t border-slate-200 bg-white">
             <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-center text-sm text-slate-500 sm:px-6 lg:px-8">
                 <p>
-                    © {{ date('Y') }} TJKT CHECK · Portal Kompetensi Siswa
+                    © {{ date('Y') }} {{ $appTitle }} · Portal Kompetensi Siswa
                 </p>
 
                 <p>
