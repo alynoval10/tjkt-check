@@ -17,8 +17,18 @@
 
     <style>
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 12mm;
+            }
+
+            html,
             body {
                 background: white !important;
+                color: #0f172a !important;
+                font-size: 10pt;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
             }
 
             .no-print {
@@ -37,6 +47,50 @@
             .print-container {
                 max-width: 100% !important;
                 padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            main > section {
+                margin-top: 12pt !important;
+            }
+
+            main > section:first-of-type {
+                margin-top: 0 !important;
+            }
+
+            main > section > div.grid {
+                gap: 6pt !important;
+            }
+
+            main > section > div.grid > div,
+            main > section > div.mt-4 {
+                padding: 9pt !important;
+                box-shadow: none !important;
+            }
+
+            main > section > div.space-y-4 {
+                display: block;
+            }
+
+            main > section > div.space-y-4 > article {
+                margin-bottom: 8pt;
+                border-color: #cbd5e1 !important;
+                box-shadow: none !important;
+            }
+
+            main > section > div.space-y-4 > article > div > div:last-child {
+                padding: 9pt !important;
+            }
+
+            h2,
+            h3,
+            p {
+                orphans: 3;
+                widows: 3;
+            }
+
+            footer {
+                display: none !important;
             }
         }
     </style>
