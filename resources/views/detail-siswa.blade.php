@@ -1,5 +1,3 @@
-@php($appTitle = \App\Models\SiteSetting::value('site_title', 'TJKT CHECK'))
-@php($appLogo = \App\Models\SiteSetting::value('site_logo'))
 <!DOCTYPE html>
 <html lang="id">
 
@@ -261,7 +259,8 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            @forelse ($riwayatNilai as $penilaian)
+                            @if ($riwayatNilai->isNotEmpty())
+                                @foreach ($riwayatNilai as $penilaian)
                                 <tr>
                                     <td class="px-3 py-3">{{ $penilaian->periodeAkademik?->label ?? 'Periode lama' }}</td>
                                     <td class="px-3 py-3">{{ $penilaian->kelas_nama_snapshot ?? '-' }}</td>
@@ -270,9 +269,10 @@
                                     <td class="px-3 py-3 font-semibold">{{ $penilaian->nilai ?? '-' }}</td>
                                     <td class="px-3 py-3">{{ $penilaian->user?->name ?? '-' }}</td>
                                 </tr>
-                            @empty
+                                @endforeach
+                            @else
                                 <tr><td colspan="6" class="px-3 py-5 text-center text-slate-500">Belum ada nilai yang tercatat.</td></tr>
-                            @endforelse
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -398,7 +398,19 @@
 
             <div class="space-y-4">
 
-                @forelse ($materisUrut as $materi)
+                @if ($materisUrut->isEmpty())
+                    <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm sm:p-12">
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-3xl">
+                            📚
+                        </div>
+
+                        <h3 class="mt-4 text-lg font-bold text-slate-900">Belum Ada Materi</h3>
+                        <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                            Belum ada materi kompetensi untuk tingkat {{ $siswa->rombel?->tingkat ?? '-' }}.
+                        </p>
+                    </div>
+                @else
+                    @foreach ($materisUrut as $materi)
 
                     @php
                         $kelulusan = isset($penilaianByMateri)
@@ -547,24 +559,8 @@
                         </div>
                     </article>
 
-                @empty
-
-                    <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm sm:p-12">
-                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-3xl">
-                            📚
-                        </div>
-
-                        <h3 class="mt-4 text-lg font-bold text-slate-900">
-                            Belum Ada Materi
-                        </h3>
-
-                        <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-                            Belum ada materi kompetensi untuk tingkat
-                            {{ $siswa->rombel?->tingkat ?? '-' }}.
-                        </p>
-                    </div>
-
-                @endforelse
+                    @endforeach
+                @endif
             </div>
         </section>
 

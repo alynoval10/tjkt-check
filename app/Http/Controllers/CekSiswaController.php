@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Materi;
+use App\Models\SiteSetting;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 
@@ -133,8 +134,12 @@ class CekSiswaController extends Controller
         $tingkatTampil = $siswa->status === 'alumni'
             ? ($riwayatLulus?->kelas_asal_tingkat ?? $siswa->rombel?->tingkat ?? '-')
             : ($siswa->rombel?->tingkat ?? '-');
+        $appTitle = SiteSetting::value('site_title', 'TJKT CHECK');
+        $appLogo = SiteSetting::value('site_logo');
 
         return view('detail-siswa', compact(
+            'appTitle',
+            'appLogo',
             'siswa',
             'materis',
             'materisUrut',
