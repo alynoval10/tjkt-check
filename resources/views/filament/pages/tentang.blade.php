@@ -3,11 +3,13 @@
         <x-filament::section>
             <div class="mx-auto max-w-3xl py-4 text-center">
                 @if ($appLogo)
-                    <img
-                        src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($appLogo) }}"
-                        alt="Logo {{ $appTitle }}"
-                        class="mx-auto mb-4 h-20 w-20 rounded-2xl object-contain shadow-sm"
-                    >
+                    <div class="mx-auto mb-4 flex items-center justify-center overflow-hidden rounded-xl shadow-sm" style="width: 4rem; height: 4rem;">
+                        <img
+                            src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($appLogo) }}"
+                            alt="Logo {{ $appTitle }}"
+                            style="display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain;"
+                        >
+                    </div>
                 @else
                     <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-600 text-2xl font-bold text-white shadow-sm">
                         {{ mb_strtoupper(mb_substr($appTitle, 0, 2)) }}
