@@ -16,6 +16,15 @@ class SiswaForm
             Select::make('kelas_id')
                 ->label('Kelas')
                 ->relationship('rombel', 'nama')
+                ->modifyQueryUsing(function ($query, $record) {
+                    return $query->where(function ($query) use ($record): void {
+                        $query->where('is_active', true);
+
+                        if ($record?->kelas_id) {
+                            $query->orWhereKey($record->kelas_id);
+                        }
+                    });
+                })
                 ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->nama} ({$record->tingkat})")
                 ->searchable()
                 ->preload()

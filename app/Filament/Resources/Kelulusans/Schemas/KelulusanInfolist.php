@@ -11,7 +11,7 @@ class KelulusanInfolist
     {
         return $schema->components([
             TextEntry::make('siswa.nama')->label('Siswa'),
-            TextEntry::make('siswa.rombel.nama')->label('Kelas'),
+            TextEntry::make('kelas_nama_snapshot')->label('Kelas'),
             TextEntry::make('materi.nama')->label('Materi'),
             TextEntry::make('user.name')->label('Penguji'),
             TextEntry::make('tanggal_uji')->label('Tanggal Uji')->date(),

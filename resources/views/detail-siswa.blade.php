@@ -171,7 +171,7 @@
 
                         <div class="min-w-0">
                             <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">
-                                Data Peserta Didik
+                                {{ $siswa->status === 'alumni' ? 'Alumni' : 'Data Peserta Didik' }}
                             </p>
 
                             <h2 class="mt-1 break-words text-2xl font-bold sm:text-3xl">
@@ -196,7 +196,7 @@
                 </div>
             </div>
 
-            <div class="grid gap-px bg-slate-200 sm:grid-cols-3">
+            <div class="grid gap-px bg-slate-200 sm:grid-cols-4">
 
                 <div class="bg-white p-5">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -214,7 +214,7 @@
                     </p>
 
                     <p class="mt-2 font-bold text-slate-900">
-                        {{ $siswa->rombel?->nama ?? '-' }}
+                        {{ $namaKelasTampil }}
                     </p>
                 </div>
 
@@ -224,11 +224,60 @@
                     </p>
 
                     <p class="mt-2 font-bold text-slate-900">
-                        {{ $siswa->rombel?->tingkat ?? '-' }}
+                        {{ $tingkatTampil }}
+                    </p>
+                </div>
+
+                <div class="bg-white p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Status</p>
+                    <p class="mt-2 font-bold {{ $siswa->status === 'alumni' ? 'text-indigo-700' : 'text-emerald-700' }}">
+                        {{ $siswa->status === 'alumni' ? 'Alumni' : 'Aktif' }}
+                        @if ($siswa->tanggal_lulus)
+                            <span class="block text-xs font-normal text-slate-500">Lulus {{ $siswa->tanggal_lulus->format('d/m/Y') }}</span>
+                        @endif
                     </p>
                 </div>
             </div>
         </section>
+
+        @if ($siswa->status === 'alumni')
+            <section class="mt-8 rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm sm:p-6">
+                <div class="mb-4">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600">Arsip Akademik</p>
+                    <h2 class="mt-1 text-xl font-bold text-slate-900">Riwayat Nilai per Materi</h2>
+                    <p class="mt-1 text-sm text-slate-500">Nilai dan periode tetap tersimpan meskipun siswa sudah menjadi alumni.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[720px] divide-y divide-slate-200 text-left text-sm">
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                            <tr>
+                                <th class="px-3 py-3">Periode</th>
+                                <th class="px-3 py-3">Kelas</th>
+                                <th class="px-3 py-3">Materi</th>
+                                <th class="px-3 py-3">Tanggal Uji</th>
+                                <th class="px-3 py-3">Nilai</th>
+                                <th class="px-3 py-3">Penguji</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse ($riwayatNilai as $penilaian)
+                                <tr>
+                                    <td class="px-3 py-3">{{ $penilaian->periodeAkademik?->label ?? 'Periode lama' }}</td>
+                                    <td class="px-3 py-3">{{ $penilaian->kelas_nama_snapshot ?? '-' }}</td>
+                                    <td class="px-3 py-3">{{ $penilaian->materi?->nama ?? '-' }}</td>
+                                    <td class="px-3 py-3">{{ $penilaian->tanggal_uji?->format('d/m/Y') ?? $penilaian->tanggal_uji }}</td>
+                                    <td class="px-3 py-3 font-semibold">{{ $penilaian->nilai ?? '-' }}</td>
+                                    <td class="px-3 py-3">{{ $penilaian->user?->name ?? '-' }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="6" class="px-3 py-5 text-center text-slate-500">Belum ada nilai yang tercatat.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        @endif
 
         {{-- Ringkasan --}}
         <section class="mt-6">
@@ -574,7 +623,11 @@
 
                     <p class="mt-1 text-sm leading-6 text-blue-700">
                         Status kompetensi diperbarui oleh guru penguji.
-                        Nilai siswa tidak ditampilkan pada halaman ini.
+                        @if ($siswa->status === 'alumni')
+                            Riwayat nilai alumni tetap tersedia untuk ditinjau.
+                        @else
+                            Nilai siswa tidak ditampilkan pada halaman ini.
+                        @endif
                     </p>
                 </div>
             </div>

@@ -14,6 +14,9 @@ class Siswa extends Model
         'nama',
         'kelas_id',
         'public_id',
+        'status',
+        'tanggal_lulus',
+        'periode_lulus_id',
     ];
 
     public function rombel(): BelongsTo
@@ -21,9 +24,26 @@ class Siswa extends Model
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
+    public function periodeLulus(): BelongsTo
+    {
+        return $this->belongsTo(PeriodeAkademik::class, 'periode_lulus_id');
+    }
+
     public function kelulusans(): HasMany
     {
         return $this->hasMany(Kelulusan::class);
+    }
+
+    public function riwayatKelas(): HasMany
+    {
+        return $this->hasMany(RiwayatKelas::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'tanggal_lulus' => 'date',
+        ];
     }
     
     protected static function booted(): void

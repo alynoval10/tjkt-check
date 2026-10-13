@@ -73,8 +73,9 @@ class MatriksKompetensi extends Widget
         $kelasId = $this->pageFilters['kelas_id'] ?? null;
 
         $kelas = $kelasId
-            ? Kelas::find($kelasId)
+            ? Kelas::query()->where('is_active', true)->find($kelasId)
             : Kelas::query()
+                ->where('is_active', true)
                 ->orderBy('tingkat')
                 ->orderBy('nama')
                 ->first();
@@ -107,6 +108,7 @@ class MatriksKompetensi extends Widget
 
         $siswas = Siswa::query()
             ->where('kelas_id', $kelas->id)
+            ->where('status', 'aktif')
             ->with([
                 'kelulusans' => fn ($query) =>
                     $query->whereIn('materi_id', $materiIds),

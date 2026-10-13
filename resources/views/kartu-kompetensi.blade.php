@@ -38,7 +38,7 @@
         <dl>
             <dt>Nama</dt><dd>{{ $siswa->nama }}</dd>
             <dt>NIS</dt><dd>{{ $siswa->nis }}</dd>
-            <dt>Kelas</dt><dd>{{ $siswa->rombel?->nama ?? '-' }}</dd>
+            <dt>Kelas</dt><dd>{{ $siswa->status === 'alumni' ? 'Alumni' : ($siswa->rombel?->nama ?? '-') }}</dd>
         </dl>
         {{-- Nilai null berbeda dari nilai nol: nol berarti sudah diuji. --}}
         <table>

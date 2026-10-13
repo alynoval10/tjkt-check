@@ -12,10 +12,20 @@ class KartuKompetensiController extends Controller
         // Kartu mengikuti tingkat kelas saat ini, sama seperti matriks Dashboard.
         $siswa->load('rombel');
         $materis = Materi::query()
-            ->where('tingkat', $siswa->rombel?->tingkat)
-            ->orderBy('nama')->get();
-        $penilaian = $siswa->kelulusans()->with('user')
-            ->whereIn('materi_id', $materis->pluck('id'))->get()->keyBy('materi_id');
+            ->when(
+                $siswa->status !== 'alumni',
+                fn ($query) => $query->where('tingkat', $siswa->rombel?->tingkat),
+            )
+            ->orderBy('tingkat')
+            ->orderBy('nama')
+            ->get();
+        $penilaian = $siswa->kelulusans()
+            ->with('user')
+            ->whereIn('materi_id', $materis->pluck('id'))
+            ->get()
+            ->sortByDesc(fn ($record) => [$record->tanggal_uji?->format('Ymd') ?? '', $record->id])
+            ->unique('materi_id')
+            ->keyBy('materi_id');
 
         return response()->view('kartu-kompetensi', compact('siswa', 'materis', 'penilaian'))
             ->header('Cache-Control', 'private, no-store');

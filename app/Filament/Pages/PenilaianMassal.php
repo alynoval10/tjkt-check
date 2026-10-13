@@ -258,6 +258,7 @@ class PenilaianMassal extends Page
                 'kelas_id',
                 $kelas->id
             )
+            ->where('status', 'aktif')
             ->orderBy('nama')
             ->get();
     }
@@ -634,6 +635,7 @@ class PenilaianMassal extends Page
                 'kelas_id',
                 $this->kelasId
             )
+            ->where('status', 'aktif')
             ->get();
 
         /*
@@ -782,6 +784,9 @@ class PenilaianMassal extends Page
                         'siswa_id' =>
                             $siswa->id,
 
+                        'kelas_id' =>
+                            $this->kelasId,
+
                         'materi_id' =>
                             $this->materiId,
 
@@ -900,6 +905,7 @@ class PenilaianMassal extends Page
                             'kelas_id',
                             $this->kelasId
                         )
+                        ->where('status', 'aktif')
                         ->pluck('id');
 
                     /*
@@ -1006,6 +1012,7 @@ class PenilaianMassal extends Page
     public function getKelasOptionsProperty(): array
     {
         return Kelas::query()
+            ->where('is_active', true)
             ->orderBy('tingkat')
             ->orderBy('nama')
             ->pluck(

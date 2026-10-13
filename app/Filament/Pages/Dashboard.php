@@ -24,6 +24,7 @@ class Dashboard extends BaseDashboard
                             ->label('Kelas')
                             ->options(
                                 Kelas::query()
+                                    ->where('is_active', true)
                                     ->orderBy('tingkat')
                                     ->orderBy('nama')
                                     ->pluck('nama', 'id')

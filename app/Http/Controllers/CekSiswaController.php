@@ -41,24 +41,29 @@ class CekSiswaController extends Controller
             'rombel',
             'kelulusans.materi',
             'kelulusans.user',
+            'kelulusans.kelas',
+            'kelulusans.periodeAkademik',
+            'riwayatKelas.periodeAkademik',
         ])
             ->where('public_id', $publicId)
             ->firstOrFail();
 
         $materis = Materi::query()
             ->when(
-                $siswa->rombel,
-                fn ($query) => $query->where(
-                    'tingkat',
-                    $siswa->rombel->tingkat
-                ),
-                fn ($query) => $query->whereRaw('1 = 0')
+                $siswa->status !== 'alumni',
+                fn ($query) => $query->where('tingkat', $siswa->rombel?->tingkat),
             )
+            ->orderBy('tingkat')
             ->orderBy('nama')
             ->get();
 
-        $penilaianByMateri = $siswa->kelulusans
+        $riwayatNilai = $siswa->kelulusans
+            ->sortByDesc(fn ($kelulusan) => [$kelulusan->tanggal_uji?->format('Ymd') ?? '', $kelulusan->id])
+            ->values();
+
+        $penilaianByMateri = $riwayatNilai
             ->whereIn('materi_id', $materis->pluck('id'))
+            ->unique('materi_id')
             ->keyBy('materi_id');
 
         /*
@@ -114,6 +119,17 @@ class CekSiswaController extends Controller
             ? round(($lulus / $totalMateri) * 100)
             : 0;
 
+        $riwayatLulus = $siswa->riwayatKelas
+            ->where('jenis_perubahan', 'lulus')
+            ->sortByDesc('id')
+            ->first();
+        $namaKelasTampil = $siswa->status === 'alumni'
+            ? ($riwayatLulus?->kelas_asal_nama ?? $siswa->rombel?->nama ?? '-')
+            : ($siswa->rombel?->nama ?? '-');
+        $tingkatTampil = $siswa->status === 'alumni'
+            ? ($riwayatLulus?->kelas_asal_tingkat ?? $siswa->rombel?->tingkat ?? '-')
+            : ($siswa->rombel?->tingkat ?? '-');
+
         return view('detail-siswa', compact(
             'siswa',
             'materis',
@@ -121,7 +137,10 @@ class CekSiswaController extends Controller
             'totalMateri',
             'sudahDinilai',
             'lulus',
-            'persentase'
+            'persentase',
+            'riwayatNilai',
+            'namaKelasTampil',
+            'tingkatTampil',
         ));
     }
 }

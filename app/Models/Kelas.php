@@ -12,7 +12,13 @@ class Kelas extends Model
     protected $fillable = [
         'tingkat',
         'nama',
+        'is_active',
     ];
+
+    protected function casts(): array
+    {
+        return ['is_active' => 'boolean'];
+    }
 
     public function siswas(): HasMany
     {

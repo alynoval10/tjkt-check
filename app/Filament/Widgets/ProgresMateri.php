@@ -27,8 +27,9 @@ class ProgresMateri extends ChartWidget
         $kelasId = $this->pageFilters['kelas_id'] ?? null;
 
         $kelas = $kelasId
-            ? Kelas::find($kelasId)
+            ? Kelas::query()->where('is_active', true)->find($kelasId)
             : Kelas::query()
+                ->where('is_active', true)
                 ->orderBy('tingkat')
                 ->orderBy('nama')
                 ->first();
@@ -59,6 +60,7 @@ class ProgresMateri extends ChartWidget
 
         $siswaIds = Siswa::query()
             ->where('kelas_id', $kelas->id)
+            ->where('status', 'aktif')
             ->pluck('id');
 
         $totalSiswa = $siswaIds->count();

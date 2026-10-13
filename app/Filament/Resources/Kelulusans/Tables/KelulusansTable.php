@@ -44,7 +44,7 @@ class KelulusansTable
                 |--------------------------------------------------------------------------
                 */
 
-                TextColumn::make('siswa.rombel.nama')
+                TextColumn::make('kelas_nama_snapshot')
                     ->label('Kelas')
                     ->searchable()
                     ->sortable(),
@@ -265,14 +265,7 @@ class KelulusansTable
                             $query->when(
                                 $data['value'] ?? null,
                                 fn ($query, $tingkat) =>
-                                    $query->whereHas(
-                                        'siswa.rombel',
-                                        fn ($q) =>
-                                            $q->where(
-                                                'tingkat',
-                                                $tingkat
-                                            )
-                                    )
+                                    $query->where('tingkat_snapshot', $tingkat)
                             )
                     ),
 
@@ -286,6 +279,7 @@ class KelulusansTable
                     ->label('Kelas')
                     ->options(
                         fn () => Kelas::query()
+                            ->where('is_active', true)
                             ->orderBy('tingkat')
                             ->orderBy('nama')
                             ->pluck('nama', 'id')
@@ -297,14 +291,7 @@ class KelulusansTable
                             $query->when(
                                 $data['value'] ?? null,
                                 fn ($query, $kelasId) =>
-                                    $query->whereHas(
-                                        'siswa',
-                                        fn ($q) =>
-                                            $q->where(
-                                                'kelas_id',
-                                                $kelasId
-                                            )
-                                    )
+                                    $query->where('kelas_id', $kelasId)
                             )
                     ),
 

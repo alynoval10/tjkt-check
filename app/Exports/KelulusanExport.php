@@ -10,13 +10,13 @@ class KelulusanExport implements FromCollection, WithHeadings
 {
     public function collection()
     {
-        return Kelulusan::with(['siswa.rombel', 'materi', 'user'])
+        return Kelulusan::with(['siswa', 'materi', 'user'])
             ->get()
             ->map(fn ($item) => [
                 $item->siswa?->nama ?? '',
                 $item->siswa?->nis ?? '',
-                $item->siswa?->rombel?->tingkat ?? '',
-                $item->siswa?->rombel?->nama ?? '',
+                $item->tingkat_snapshot ?? '',
+                $item->kelas_nama_snapshot ?? '',
                 $item->materi?->nama ?? '',
                 $item->user?->name ?? '',
                 $item->tanggal_uji,

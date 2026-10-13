@@ -8,4 +8,9 @@ use Filament\Resources\Pages\EditRecord;
 class EditPeriodeAkademik extends EditRecord
 {
     protected static string $resource = PeriodeAkademikResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('index');
+    }
 }

@@ -29,10 +29,11 @@ class DetailSiswaMateri extends Widget
         $kelasId = $this->pageFilters['kelas_id'] ?? null;
 
         if ($kelasId) {
-            return Kelas::find($kelasId);
+            return Kelas::query()->where('is_active', true)->find($kelasId);
         }
 
         return Kelas::query()
+            ->where('is_active', true)
             ->orderBy('tingkat')
             ->orderBy('nama')
             ->first();
@@ -104,6 +105,7 @@ class DetailSiswaMateri extends Widget
 
         $siswas = Siswa::query()
             ->where('kelas_id', $kelas->id)
+            ->where('status', 'aktif')
             ->orderBy('nama')
             ->get();
 

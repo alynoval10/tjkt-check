@@ -38,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             // Urutan grup sidebar untuk pengelolaan data dan penilaian.
             ->navigationGroups([
                 'Data Akademik',
+                'Manajemen Akademik',
                 'Penilaian',
                 'Pemeliharaan',
             ])

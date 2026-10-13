@@ -30,13 +30,19 @@ class StatistikAkademik extends StatsOverviewWidget
             ->count();
 
         return [
-            Stat::make('Jumlah Siswa', Siswa::query()->count())
-                ->description('Seluruh siswa terdaftar')
+            Stat::make('Siswa Aktif', Siswa::query()->where('status', 'aktif')->count())
+                ->description('Siswa di kelas berjalan')
                 ->descriptionIcon('heroicon-m-users')
                 ->icon('heroicon-o-users')
                 ->color('info'),
 
-            Stat::make('Jumlah Kelas', Kelas::query()->count())
+            Stat::make('Alumni', Siswa::query()->where('status', 'alumni')->count())
+                ->description('Siswa kelas XII yang telah diluluskan')
+                ->descriptionIcon('heroicon-m-academic-cap')
+                ->icon('heroicon-o-academic-cap')
+                ->color('success'),
+
+            Stat::make('Jumlah Kelas', Kelas::query()->where('is_active', true)->count())
                 ->description('Kelas aktif di sistem')
                 ->descriptionIcon('heroicon-m-academic-cap')
                 ->icon('heroicon-o-academic-cap')

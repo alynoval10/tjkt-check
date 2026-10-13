@@ -15,6 +15,9 @@ class Kelulusan extends Model
 
     protected $fillable = [
         'siswa_id',
+        'kelas_id',
+        'kelas_nama_snapshot',
+        'tingkat_snapshot',
         'materi_id',
         'periode_akademik_id',
         'user_id',
@@ -22,6 +25,28 @@ class Kelulusan extends Model
         'nilai',
         'catatan',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'tanggal_uji' => 'date',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Kelulusan $kelulusan): void {
+            if (! $kelulusan->kelas_id && $kelulusan->siswa_id) {
+                $kelulusan->kelas_id = Siswa::query()->whereKey($kelulusan->siswa_id)->value('kelas_id');
+            }
+
+            if ($kelulusan->kelas_id && (! $kelulusan->kelas_nama_snapshot || ! $kelulusan->tingkat_snapshot)) {
+                $kelas = Kelas::query()->find($kelulusan->kelas_id);
+                $kelulusan->kelas_nama_snapshot ??= $kelas?->nama;
+                $kelulusan->tingkat_snapshot ??= $kelas?->tingkat;
+            }
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -32,6 +57,11 @@ class Kelulusan extends Model
     public function siswa()
     {
         return $this->belongsTo(Siswa::class);
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
     }
 
     /*

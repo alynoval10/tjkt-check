@@ -22,8 +22,9 @@ class ProgresKelas extends StatsOverviewWidget
         $kelasId = $this->pageFilters['kelas_id'] ?? null;
 
         $kelas = $kelasId
-            ? Kelas::find($kelasId)
+            ? Kelas::query()->where('is_active', true)->find($kelasId)
             : Kelas::query()
+                ->where('is_active', true)
                 ->orderBy('tingkat')
                 ->orderBy('nama')
                 ->first();
@@ -34,6 +35,7 @@ class ProgresKelas extends StatsOverviewWidget
 
         $siswas = Siswa::query()
             ->where('kelas_id', $kelas->id)
+            ->where('status', 'aktif')
             ->with('kelulusans')
             ->get();
 

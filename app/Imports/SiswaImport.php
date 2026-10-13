@@ -22,7 +22,7 @@ class SiswaImport implements ToModel, WithHeadingRow
             ]);
         }
 
-        $kelas = Kelas::query()->where('nama', $namaKelas)->first();
+        $kelas = Kelas::query()->where('is_active', true)->where('nama', $namaKelas)->first();
 
         if (! $kelas) {
             throw ValidationException::withMessages([

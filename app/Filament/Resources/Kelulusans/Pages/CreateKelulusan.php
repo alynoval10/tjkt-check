@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Kelulusans\Pages;
 use App\Filament\Resources\Kelulusans\KelulusanResource;
 use App\Models\Kelulusan;
 use App\Models\PeriodeAkademik;
+use App\Models\Siswa;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -54,6 +55,10 @@ class CreateKelulusan extends CreateRecord
 
         $data['periode_akademik_id'] =
             $periode->id;
+
+        $data['kelas_id'] = Siswa::query()
+            ->whereKey($data['siswa_id'])
+            ->value('kelas_id');
 
         /*
         |--------------------------------------------------------------------------

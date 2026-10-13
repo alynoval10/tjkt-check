@@ -16,6 +16,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
+use Illuminate\Database\Eloquent\Builder;
 
 class KelasResource extends Resource
 {
@@ -30,6 +31,11 @@ class KelasResource extends Resource
     protected static ?string $modelLabel = 'Kelas';
     protected static ?string $pluralModelLabel = 'Kelas';
     protected static ?string $recordTitleAttribute = 'nama';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('is_active', true);
+    }
 
     public static function form(Schema $schema): Schema
     {

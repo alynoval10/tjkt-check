@@ -103,6 +103,7 @@ class KelulusanResource extends Resource
                     ->label('Kelas')
                     ->options(
                         fn () => Kelas::query()
+                            ->where('is_active', true)
                             ->orderBy('tingkat')
                             ->orderBy('nama')
                             ->pluck('nama', 'id')
@@ -139,6 +140,7 @@ class KelulusanResource extends Resource
 
                         return Siswa::query()
                             ->where('kelas_id', $kelasId)
+                            ->where('status', 'aktif')
                             ->orderBy('nama')
                             ->pluck('nama', 'id');
                     })

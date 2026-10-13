@@ -18,11 +18,12 @@ class SiswaExport implements FromCollection, WithHeadings
                 $siswa->nama,
                 $siswa->rombel?->tingkat ?? '',
                 $siswa->rombel?->nama ?? '',
+                $siswa->status === 'alumni' ? 'Alumni' : 'Aktif',
             ]);
     }
 
     public function headings(): array
     {
-        return ['NIS', 'Nama Siswa', 'Tingkat', 'Kelas'];
+        return ['NIS', 'Nama Siswa', 'Tingkat', 'Kelas', 'Status'];
     }
 }

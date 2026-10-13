@@ -335,6 +335,7 @@
                 const nis = escapeHtml(siswa.nis);
                 const kelas = escapeHtml(siswa.rombel?.nama ?? '-');
                 const tingkat = escapeHtml(siswa.rombel?.tingkat ?? '-');
+                const status = siswa.status === 'alumni' ? 'Alumni' : 'Aktif';
 
                 return `
                     <a
@@ -355,6 +356,7 @@
                                     <span>NIS: ${nis}</span>
                                     <span>Kelas: ${kelas}</span>
                                     <span>Tingkat: ${tingkat}</span>
+                                    <span>Status: ${status}</span>
                                 </div>
                             </div>
 
