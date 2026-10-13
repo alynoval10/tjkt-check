@@ -60,7 +60,7 @@ class KartuKompetensiController extends Controller
             : ($periodeId ? ($kelasSnapshot ?? $siswa->rombel?->nama ?? '-') : ($siswa->rombel?->nama ?? '-'));
 
         return response()->view('kartu-kompetensi', compact(
-            'siswa', 'materis', 'penilaian', 'periodes', 'periode', 'periodeId', 'kelasLaporan'
+            'siswa', 'materis', 'penilaian', 'periodes', 'periode', 'periodeId', 'kelasLaporan', 'tingkatLaporan'
         ))
             ->header('Cache-Control', 'private, no-store');
     }
