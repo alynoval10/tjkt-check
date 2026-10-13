@@ -50,7 +50,7 @@ class KelulusanResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $navigationLabel = 'Kelulusan';
+    protected static ?string $navigationLabel = 'Kelulusan Materi';
 
     protected static string|BackedEnum|null $navigationIcon =
         Heroicon::OutlinedCheckBadge;
@@ -61,9 +61,9 @@ class KelulusanResource extends Resource
     |--------------------------------------------------------------------------
     */
 
-    protected static ?string $modelLabel = 'Kelulusan';
+    protected static ?string $modelLabel = 'Kelulusan Materi';
 
-    protected static ?string $pluralModelLabel = 'Kelulusan';
+    protected static ?string $pluralModelLabel = 'Kelulusan Materi';
 
     protected static ?string $recordTitleAttribute = 'id';
 

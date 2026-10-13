@@ -371,7 +371,7 @@ class KelulusansTable
                         function () {
                             return Excel::download(
                                 new KelulusanExport(),
-                                'daftar-kelulusan-tjkt.xlsx'
+                                'daftar-kelulusan-materi-tjkt.xlsx'
                             );
                         }
                     ),
