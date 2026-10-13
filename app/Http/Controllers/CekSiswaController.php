@@ -103,6 +103,10 @@ class CekSiswaController extends Controller
             })
             ->values();
 
+        // Kirim daftar terurut dengan nama eksplisit agar view tidak perlu
+        // membuat variabel lokal sebelum menampilkannya.
+        $materisUrut = $materis;
+
         $totalMateri = $materis->count();
 
         $sudahDinilai = $penilaianByMateri->count();
@@ -133,6 +137,7 @@ class CekSiswaController extends Controller
         return view('detail-siswa', compact(
             'siswa',
             'materis',
+            'materisUrut',
             'penilaianByMateri',
             'totalMateri',
             'sudahDinilai',
