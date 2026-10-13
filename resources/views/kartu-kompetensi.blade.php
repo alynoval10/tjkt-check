@@ -48,8 +48,8 @@
         .status-remedial { background: #fff1e8; color: #a34b11; }
         .status-pending { background: #f0f2f4; color: #596773; }
         .empty { padding: 24px; color: var(--muted); text-align: center; }
-        .signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 30px; break-inside: avoid; }
-        .signature { min-height: 115px; text-align: center; }
+        .signatures { display: flex; justify-content: flex-end; margin-top: 30px; break-inside: avoid; }
+        .signature { width: 240px; max-width: 48%; min-height: 115px; text-align: center; }
         .signature-role { color: var(--muted); font-size: 11px; }
         .signature-line { width: 78%; margin: 78px auto 0; padding-top: 5px; border-top: 1px solid #6b7780; font-size: 11px; }
         .report-footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line); color: var(--muted); font-size: 9px; }
@@ -69,7 +69,8 @@
             .student-card { gap: 10px 14px; padding: 13px; }
             .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             th, td { padding: 7px 6px; font-size: 10px; }
-            .signatures { gap: 8px; }
+            .signatures { justify-content: flex-end; }
+            .signature { max-width: 48%; }
             .signature-line { width: 95%; }
         }
     </style>
@@ -145,18 +146,17 @@
             <div class="table-wrap">
                 <table>
                     <colgroup>
-                        <col style="width: 22%"><col style="width: 8%"><col style="width: 13%">
-                        <col style="width: 14%"><col style="width: 16%"><col style="width: 27%">
+                        <col style="width: 28%"><col style="width: 16%"><col style="width: 17%">
+                        <col style="width: 18%"><col style="width: 21%">
                     </colgroup>
                     <thead>
-                        <tr><th>Materi</th><th>Nilai</th><th>Status</th><th>Tanggal Uji</th><th>Penguji</th><th>Catatan</th></tr>
+                        <tr><th>Materi</th><th>Status</th><th>Tanggal Uji</th><th>Penguji</th><th>Catatan</th></tr>
                     </thead>
                     <tbody>
                         @forelse ($materis as $materi)
                             @php($hasil = $penilaian->get($materi->id))
                             <tr>
                                 <td>{{ $materi->nama }}</td>
-                                <td class="score">{{ is_null($hasil?->nilai) ? '-' : $hasil->nilai }}</td>
                                 <td>
                                     @if (is_null($hasil?->nilai))
                                         <span class="status status-pending">Belum diuji</span>
@@ -171,7 +171,7 @@
                                 <td>{{ $hasil?->catatan ?: '-' }}</td>
                             </tr>
                         @empty
-                            <tr><td class="empty" colspan="6">Belum ada materi untuk tingkat siswa ini.</td></tr>
+                            <tr><td class="empty" colspan="5">Belum ada materi untuk tingkat siswa ini.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -180,12 +180,8 @@
 
         <section class="signatures">
             <div class="signature">
-                <div class="signature-role">Mengetahui,</div>
-                <div class="signature-line">Kepala Program Keahlian</div>
-            </div>
-            <div class="signature">
                 <div class="signature-role">{{ now()->translatedFormat('d F Y') }}</div>
-                <div class="signature-line">Penguji / Pembimbing</div>
+                <div class="signature-line">Penguji</div>
             </div>
         </section>
 

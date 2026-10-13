@@ -16,6 +16,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        .print-only {
+            display: none;
+        }
+
         @media print {
             @page {
                 size: A4 portrait;
@@ -33,6 +37,30 @@
 
             .no-print {
                 display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            .print-hide-value {
+                display: none !important;
+            }
+
+            .print-signature {
+                width: 240px;
+                max-width: 48%;
+                margin: 28pt 0 0 auto;
+                padding-top: 4pt;
+                text-align: center;
+                break-inside: avoid;
+            }
+
+            .print-signature-line {
+                margin-top: 54pt;
+                padding-top: 5pt;
+                border-top: 1px solid #64748b;
+                font-weight: 600;
             }
 
             .print-shadow-none {
@@ -93,6 +121,7 @@
                 display: none !important;
             }
         }
+
     </style>
 </head>
 
@@ -135,6 +164,12 @@
     </header>
 
     <main class="print-container mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+
+        <div class="print-only mb-5 border-b-2 border-blue-700 pb-3">
+            <p class="text-xs font-bold uppercase tracking-widest text-blue-700">{{ $appTitle }}</p>
+            <h1 class="mt-1 text-2xl font-bold text-slate-900">Rapor Kompetensi Siswa</h1>
+            <p class="mt-1 text-xs text-slate-500">Rekap capaian kompetensi praktik program keahlian TJKT</p>
+        </div>
 
         {{-- Tombol navigasi --}}
         <div class="no-print mb-5 flex gap-3">
@@ -254,7 +289,7 @@
                                 <th class="px-3 py-3">Kelas</th>
                                 <th class="px-3 py-3">Materi</th>
                                 <th class="px-3 py-3">Tanggal Uji</th>
-                                <th class="px-3 py-3">Nilai</th>
+                                <th class="print-hide-value px-3 py-3">Nilai</th>
                                 <th class="px-3 py-3">Penguji</th>
                             </tr>
                         </thead>
@@ -266,7 +301,7 @@
                                     <td class="px-3 py-3">{{ $penilaian->kelas_nama_snapshot ?? '-' }}</td>
                                     <td class="px-3 py-3">{{ $penilaian->materi?->nama ?? '-' }}</td>
                                     <td class="px-3 py-3">{{ $penilaian->tanggal_uji?->format('d/m/Y') ?? $penilaian->tanggal_uji }}</td>
-                                    <td class="px-3 py-3 font-semibold">{{ $penilaian->nilai ?? '-' }}</td>
+                                    <td class="print-hide-value px-3 py-3 font-semibold">{{ $penilaian->nilai ?? '-' }}</td>
                                     <td class="px-3 py-3">{{ $penilaian->user?->name ?? '-' }}</td>
                                 </tr>
                                 @endforeach
@@ -562,6 +597,11 @@
                     @endforeach
                 @endif
             </div>
+        </section>
+
+        <section class="print-only print-signature">
+            <p>{{ now()->translatedFormat('d F Y') }}</p>
+            <div class="print-signature-line">Penguji</div>
         </section>
 
         <section class="no-print mt-8 rounded-2xl border border-blue-100 bg-blue-50 p-5">
