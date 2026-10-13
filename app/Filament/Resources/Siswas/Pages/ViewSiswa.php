@@ -14,8 +14,8 @@ class ViewSiswa extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            // Buka kartu A4 tanpa meninggalkan halaman detail siswa.
-            Action::make('cetakKartu')->label('Cetak Kartu')->icon('heroicon-o-printer')
+            // Buka rapor A4 tanpa meninggalkan halaman detail siswa.
+            Action::make('cetakKartu')->label('Cetak Rapor')->icon('heroicon-o-printer')
                 ->url(fn () => route('siswa.kartu-kompetensi', $this->getRecord()))->openUrlInNewTab(),
             EditAction::make(),
         ];

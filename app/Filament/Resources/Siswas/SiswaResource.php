@@ -125,8 +125,8 @@ public static function getPluralModelLabel(): string
         ])
 
         ->actions([
-            // Akses cetak langsung dari daftar siswa.
-            Action::make('cetakKartu')->label('Cetak Kartu')->icon('heroicon-o-printer')
+            // Cetak rapor kompetensi langsung dari daftar siswa.
+            Action::make('cetakKartu')->label('Cetak Rapor')->icon('heroicon-o-printer')
                 ->url(fn (Siswa $record) => route('siswa.kartu-kompetensi', $record))->openUrlInNewTab(),
             \Filament\Actions\EditAction::make(),
             \Filament\Actions\DeleteAction::make(),

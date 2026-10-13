@@ -20,6 +20,10 @@
         .signature { margin-top: 30px; margin-left: auto; width: 240px; max-width: 100%; break-inside: avoid; }
         .signature p:last-child { margin-top: 65px; border-bottom: 1px solid #555; }
         footer { margin-top: 24px; font-size: 11px; color: #555; }
+        .report-period { margin: -10px 0 18px; color: #46534a; }
+        .remarks { font-size: 12px; }
+        .period-picker { display: inline-flex; align-items: center; gap: 8px; margin-right: 8px; }
+        select { min-width: 210px; padding: 9px 10px; border: 1px solid #aab4ad; border-radius: 4px; background: white; }
         @page { size: A4; margin: 14mm; }
         @media print {
             body { background: white; }
@@ -32,17 +36,32 @@
     </style>
 </head>
 <body>
-    <div class="toolbar"><button type="button" onclick="window.print()">Cetak / Simpan PDF</button></div>
+    <div class="toolbar">
+        <form method="GET" action="{{ route('siswa.kartu-kompetensi', $siswa) }}" class="period-picker">
+            <label for="periode_id">Periode:</label>
+            <select id="periode_id" name="periode_id" onchange="this.form.submit()">
+                <option value="" @selected(is_null($periodeId))>Semua periode</option>
+                @foreach ($periodes as $pilihanPeriode)
+                    <option value="{{ $pilihanPeriode->id }}" @selected((int) $periodeId === $pilihanPeriode->id)>
+                        {{ $pilihanPeriode->tahun_ajaran }} — Semester {{ $pilihanPeriode->semester }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
+        <button type="button" onclick="window.print()">Cetak / Simpan PDF</button>
+    </div>
     <main>
-        <header><strong>TJKT CHECK</strong><h1>Kartu Kompetensi Siswa</h1></header>
+        <header><strong>TJKT CHECK</strong><h1>Rapor Kompetensi Siswa</h1></header>
+        <p class="report-period">{{ $periode ? "Tahun Ajaran {$periode->tahun_ajaran} — Semester {$periode->semester}" : 'Semua periode' }}</p>
         <dl>
             <dt>Nama</dt><dd>{{ $siswa->nama }}</dd>
             <dt>NIS</dt><dd>{{ $siswa->nis }}</dd>
-            <dt>Kelas</dt><dd>{{ $siswa->status === 'alumni' ? 'Alumni' : ($siswa->rombel?->nama ?? '-') }}</dd>
+            <dt>Kelas</dt><dd>{{ $kelasLaporan }}</dd>
+            <dt>Status</dt><dd>{{ $siswa->status === 'alumni' ? 'Alumni' : 'Aktif' }}</dd>
         </dl>
         {{-- Nilai null berbeda dari nilai nol: nol berarti sudah diuji. --}}
         <table>
-            <thead><tr><th style="width:30%">Materi</th><th style="width:10%">Nilai</th><th style="width:20%">Status</th><th style="width:18%">Tanggal Uji</th><th>Penguji</th></tr></thead>
+            <thead><tr><th style="width:23%">Materi</th><th style="width:9%">Nilai</th><th style="width:15%">Status</th><th style="width:15%">Tanggal Uji</th><th style="width:16%">Penguji</th><th>Catatan</th></tr></thead>
             <tbody>
                 @forelse ($materis as $materi)
                     @php($hasil = $penilaian->get($materi->id))
@@ -52,9 +71,10 @@
                         <td>{{ is_null($hasil?->nilai) ? 'Belum Diuji' : ($hasil->nilai >= 75 ? 'Lulus' : 'Remedial') }}</td>
                         <td>{{ $hasil?->tanggal_uji ? \Illuminate\Support\Carbon::parse($hasil->tanggal_uji)->format('d/m/Y') : '-' }}</td>
                         <td>{{ $hasil?->user?->name ?? '-' }}</td>
+                        <td class="remarks">{{ $hasil?->catatan ?: '-' }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="5">Belum ada materi untuk kelas siswa ini.</td></tr>
+                    <tr><td colspan="6">Belum ada materi untuk kelas siswa ini.</td></tr>
                 @endforelse
             </tbody>
         </table>
