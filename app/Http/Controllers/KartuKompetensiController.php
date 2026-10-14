@@ -26,13 +26,61 @@ class KartuKompetensiController extends Controller
             ->get();
 
         $siswa->load('rombel');
-        $penilaianQuery = $siswa->kelulusans()->with('user');
+        $penilaianQuery = $siswa->kelulusans()->with(['user', 'periodeAkademik']);
 
-        if ($periodeId) {
+        if ($periode) {
+            $semesterDipilih = mb_strtolower($periode->semester);
+            $semesterSebelumnya = in_array($semesterDipilih, ['genap', '2', 'ii'], true)
+                ? ['ganjil', 'genap']
+                : [$semesterDipilih];
+
+            // Rapor semester berikutnya mewarisi capaian semester sebelumnya
+            // dalam tahun ajaran yang sama. Jika materi diuji ulang, nilai dari
+            // semester terbaru yang ditampilkan tanpa menghapus catatan lama.
+            $queryPeriodeTahunAjaran = static function ($query) use ($periode, $semesterSebelumnya): void {
+                $query->where('tahun_ajaran', $periode->tahun_ajaran)
+                    ->whereIn('semester', $semesterSebelumnya);
+            };
+
+            $penilaianQuery->where(function ($query) use ($queryPeriodeTahunAjaran, $periodeId): void {
+                $query->whereHas('periodeAkademik', $queryPeriodeTahunAjaran);
+
+                // Data sebelum fitur periode tetap dimunculkan pada periode
+                // akademik pertama, mengikuti perilaku migrasi sebelumnya.
+                $periodePertamaId = PeriodeAkademik::query()
+                    ->orderBy('tahun_ajaran')
+                    ->orderByRaw("CASE WHEN semester = 'Ganjil' THEN 1 ELSE 2 END")
+                    ->value('id');
+
+                if ((int) $periodeId === (int) $periodePertamaId) {
+                    $query->orWhereNull('periode_akademik_id');
+                }
+            });
+        } elseif ($periodeId) {
             $penilaianQuery->where('periode_akademik_id', $periodeId);
         }
 
         $semuaPenilaian = $penilaianQuery->get();
+        $urutanSemester = static function ($record) use ($periode): int {
+            if (! $periode) {
+                return 0;
+            }
+
+            return match (mb_strtolower($record->periodeAkademik?->semester ?? '')) {
+                'ganjil', '1', 'i' => 1,
+                'genap', '2', 'ii' => 2,
+                default => 0,
+            };
+        };
+        $semuaPenilaian = $semuaPenilaian
+            ->sortByDesc(fn ($record) => sprintf(
+                '%02d-%s-%020d',
+                $urutanSemester($record),
+                $record->tanggal_uji?->format('Ymd') ?? '',
+                $record->id,
+            ))
+            ->values();
+
         $tingkatSnapshot = $semuaPenilaian->first(fn ($record) => filled($record->tingkat_snapshot))?->tingkat_snapshot;
         $tingkatLaporan = $siswa->status === 'alumni'
             ? null
@@ -50,7 +98,6 @@ class KartuKompetensiController extends Controller
 
         $penilaian = $semuaPenilaian
             ->whereIn('materi_id', $materis->pluck('id'))
-            ->sortByDesc(fn ($record) => [$record->tanggal_uji?->format('Ymd') ?? '', $record->id])
             ->unique('materi_id')
             ->keyBy('materi_id');
 
