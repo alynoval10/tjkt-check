@@ -18,15 +18,19 @@ class RekapKompetensiExport extends DefaultValueBinder implements FromArray, Wit
     // Kolom materi mengikuti filter dan urutan yang terlihat di Dashboard.
     public function headings(): array
     {
-        return array_merge(['Kelas', 'NIS', 'Nama Siswa'], array_column($this->materis, 'nama'), ['Ketuntasan (%)', 'Materi Remedial']);
+        return array_merge(['No.', 'Kelas', 'NIS', 'Nama Siswa'], array_column($this->materis, 'nama'), ['Ketuntasan (%)', 'Materi Remedial', 'Rata-rata']);
     }
 
     public function array(): array
     {
-        return array_map(function ($siswa) {
-            $row = [$this->kelas, (string) $siswa['nis'], $siswa['nama']];
+        return array_map(function ($siswa, $index) {
+            $row = [$index + 1, $this->kelas, (string) $siswa['nis'], $siswa['nama']];
+            $nilai = [];
             foreach ($this->materis as $materi) {
                 $cell = $siswa['matrix'][$materi['id']];
+                if (! is_null($cell['nilai'])) {
+                    $nilai[] = $cell['nilai'];
+                }
                 $row[] = match ($cell['status']) {
                     'lulus' => $cell['nilai'].' - Lulus',
                     'belum_lulus' => $cell['nilai'].' - Remedial',
@@ -34,8 +38,10 @@ class RekapKompetensiExport extends DefaultValueBinder implements FromArray, Wit
                 };
             }
 
-            return array_merge($row, [$siswa['progres'], implode(', ', $siswa['remedial'])]);
-        }, $this->siswas);
+            $rataRata = count($nilai) > 0 ? round(array_sum($nilai) / count($nilai), 2) : null;
+
+            return array_merge($row, [$siswa['progres'], implode(', ', $siswa['remedial']), $rataRata]);
+        }, $this->siswas, array_keys($this->siswas));
     }
 
     // NIS tetap menyimpan nol awal; teks seperti =Nama tidak menjadi rumus Excel.
@@ -52,7 +58,7 @@ class RekapKompetensiExport extends DefaultValueBinder implements FromArray, Wit
 
     public function styles(Worksheet $sheet): array
     {
-        $sheet->freezePane('D2');
+        $sheet->freezePane('E2');
         $sheet->setAutoFilter($sheet->calculateWorksheetDimension());
         $sheet->getDefaultColumnDimension()->setWidth(24);
         $sheet->getStyle($sheet->calculateWorksheetDimension())->getAlignment()->setWrapText(true);
