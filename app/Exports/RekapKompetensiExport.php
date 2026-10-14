@@ -18,7 +18,13 @@ class RekapKompetensiExport extends DefaultValueBinder implements FromArray, Wit
     // Kolom materi mengikuti filter dan urutan yang terlihat di Dashboard.
     public function headings(): array
     {
-        return array_merge(['No.', 'Kelas', 'NIS', 'Nama Siswa'], array_column($this->materis, 'nama'), ['Ketuntasan (%)', 'Materi Remedial', 'Rata-rata']);
+        $headings = ['No.', 'Kelas', 'NIS', 'Nama Siswa'];
+        foreach ($this->materis as $materi) {
+            $headings[] = $materi['nama'].' - Nilai';
+            $headings[] = $materi['nama'].' - Status';
+        }
+
+        return array_merge($headings, ['Ketuntasan (%)', 'Materi Remedial', 'Rata-rata']);
     }
 
     public function array(): array
@@ -31,9 +37,10 @@ class RekapKompetensiExport extends DefaultValueBinder implements FromArray, Wit
                 if (! is_null($cell['nilai'])) {
                     $nilai[] = $cell['nilai'];
                 }
+                $row[] = $cell['nilai'];
                 $row[] = match ($cell['status']) {
-                    'lulus' => $cell['nilai'].' - Lulus',
-                    'belum_lulus' => $cell['nilai'].' - Remedial',
+                    'lulus' => 'Lulus',
+                    'belum_lulus' => 'Remedial',
                     default => 'Belum Diuji',
                 };
             }
