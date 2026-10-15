@@ -7,6 +7,7 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Filament\Pages\Dashboard;
+use Filament\Enums\ThemeMode;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -40,9 +41,11 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarWidth('17rem')
             ->collapsedSidebarWidth('4.25rem')
             ->sidebarCollapsibleOnDesktop()
-            // Gunakan tampilan terang yang konsisten pada semua halaman admin,
-            // termasuk halaman masuk.
-            ->darkMode(false)
+            // Tampilan terang menjadi pilihan awal, namun dark/light/system
+            // tetap tersedia melalui pengalih tema Filament.
+            ->darkMode()
+            ->themeSwitcher()
+            ->defaultThemeMode(ThemeMode::Light)
             ->renderHook(
                 PanelsRenderHook::STYLES_AFTER,
                 fn () => view('filament.theme'),
