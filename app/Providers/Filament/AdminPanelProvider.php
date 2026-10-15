@@ -34,6 +34,11 @@ class AdminPanelProvider extends PanelProvider
                 ? Storage::disk('public')->url($logo)
                 : null)
             ->brandLogoHeight('2.5rem')
+            // Sidebar dapat diringkas menjadi rel ikon di desktop dan dibuka
+            // kembali untuk melihat label menu serta kelompok navigasi.
+            ->sidebarWidth('17rem')
+            ->collapsedSidebarWidth('4.25rem')
+            ->sidebarCollapsibleOnDesktop()
             ->login(Login::class)
             // Urutan grup sidebar untuk pengelolaan data dan penilaian.
             ->navigationGroups([
