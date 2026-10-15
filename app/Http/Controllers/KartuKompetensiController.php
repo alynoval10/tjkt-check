@@ -29,17 +29,11 @@ class KartuKompetensiController extends Controller
         $penilaianQuery = $siswa->kelulusans()->with(['user', 'periodeAkademik']);
 
         if ($periode) {
-            $semesterDipilih = mb_strtolower($periode->semester);
-            $semesterSebelumnya = in_array($semesterDipilih, ['genap', '2', 'ii'], true)
-                ? ['ganjil', 'genap']
-                : [$semesterDipilih];
-
-            // Rapor semester berikutnya mewarisi capaian semester sebelumnya
-            // dalam tahun ajaran yang sama. Jika materi diuji ulang, nilai dari
-            // semester terbaru yang ditampilkan tanpa menghapus catatan lama.
-            $queryPeriodeTahunAjaran = static function ($query) use ($periode, $semesterSebelumnya): void {
-                $query->where('tahun_ajaran', $periode->tahun_ajaran)
-                    ->whereIn('semester', $semesterSebelumnya);
+            // Kompetensi berlaku sepanjang tahun ajaran, jadi laporan untuk
+            // semester mana pun mengambil hasil dari Ganjil dan Genap.
+            // Jika materi diuji lebih dari sekali, hasil terbaru yang tampil.
+            $queryPeriodeTahunAjaran = static function ($query) use ($periode): void {
+                $query->where('tahun_ajaran', $periode->tahun_ajaran);
             };
 
             $penilaianQuery->where(function ($query) use ($queryPeriodeTahunAjaran, $periodeId): void {
@@ -61,21 +55,9 @@ class KartuKompetensiController extends Controller
         }
 
         $semuaPenilaian = $penilaianQuery->get();
-        $urutanSemester = static function ($record) use ($periode): int {
-            if (! $periode) {
-                return 0;
-            }
-
-            return match (mb_strtolower($record->periodeAkademik?->semester ?? '')) {
-                'ganjil', '1', 'i' => 1,
-                'genap', '2', 'ii' => 2,
-                default => 0,
-            };
-        };
         $semuaPenilaian = $semuaPenilaian
             ->sortByDesc(fn ($record) => sprintf(
-                '%02d-%s-%020d',
-                $urutanSemester($record),
+                '%s-%020d',
                 $record->tanggal_uji?->format('Ymd') ?? '',
                 $record->id,
             ))
