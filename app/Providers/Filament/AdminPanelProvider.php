@@ -10,6 +10,7 @@ use App\Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -39,6 +40,13 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarWidth('17rem')
             ->collapsedSidebarWidth('4.25rem')
             ->sidebarCollapsibleOnDesktop()
+            // Gunakan tampilan terang yang konsisten pada semua halaman admin,
+            // termasuk halaman masuk.
+            ->darkMode(false)
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn () => view('filament.theme'),
+            )
             ->login(Login::class)
             // Urutan grup sidebar untuk pengelolaan data dan penilaian.
             ->navigationGroups([
