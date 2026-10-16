@@ -13,6 +13,8 @@ class ProgresKelas extends StatsOverviewWidget
 {
     use InteractsWithPageFilters;
 
+    protected static ?int $sort = 3;
+
     protected ?string $heading = 'Progres Kompetensi Kelas';
 
     protected ?string $description = 'Monitoring pencapaian kompetensi siswa berdasarkan kelas.';
@@ -36,7 +38,7 @@ class ProgresKelas extends StatsOverviewWidget
         $siswas = Siswa::query()
             ->where('kelas_id', $kelas->id)
             ->where('status', 'aktif')
-            ->with('kelulusans')
+            ->with(['kelulusans' => fn ($query) => $query->orderByDesc('id')])
             ->get();
 
         $materis = Materi::query()
@@ -56,13 +58,12 @@ class ProgresKelas extends StatsOverviewWidget
                 return 0;
             }
 
-            $jumlahLulus = $siswa->kelulusans
+            $penilaianTerakhir = $siswa->kelulusans
                 ->whereIn('materi_id', $materiIds)
-                ->filter(
-                    fn ($kelulusan) =>
-                        ! is_null($kelulusan->nilai)
-                        && $kelulusan->nilai >= 75
-                )
+                ->unique('materi_id');
+
+            $jumlahLulus = $penilaianTerakhir
+                ->filter(fn ($kelulusan) => ! is_null($kelulusan->nilai) && $kelulusan->nilai >= 75)
                 ->count();
 
             return round(

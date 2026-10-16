@@ -188,7 +188,7 @@ class KelulusansTable
 
                         return match (true) {
                             $nilai >= 90 => 'success',
-                            $nilai >= 75 => 'info',
+                            $nilai >= 75 => 'success',
                             $nilai >= 60 => 'warning',
                             default => 'danger',
                         };

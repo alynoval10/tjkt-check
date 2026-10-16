@@ -19,7 +19,7 @@ class MatriksKompetensi extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = 40;
+    protected static ?int $sort = 5;
 
     public ?int $kelasIdAktif = null;
 
@@ -111,7 +111,7 @@ class MatriksKompetensi extends Widget
             ->where('status', 'aktif')
             ->with([
                 'kelulusans' => fn ($query) =>
-                    $query->whereIn('materi_id', $materiIds),
+                    $query->whereIn('materi_id', $materiIds)->orderByDesc('id'),
             ])
             ->orderBy('nama')
             ->get();
@@ -127,6 +127,7 @@ class MatriksKompetensi extends Widget
         $this->siswas = $siswas
             ->map(function ($siswa) use ($materis) {
                 $penilaianByMateri = $siswa->kelulusans
+                    ->unique('materi_id')
                     ->keyBy('materi_id');
 
                 $matrix = [];

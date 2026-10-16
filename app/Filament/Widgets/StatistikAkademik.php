@@ -11,6 +11,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatistikAkademik extends StatsOverviewWidget
 {
+    protected static ?int $sort = 1;
+
     protected ?string $heading = 'Ringkasan Akademik';
 
     protected ?string $description = 'Informasi terbaru dari sistem TJKT CHECK.';

@@ -13,6 +13,8 @@ class ProgresMateri extends ChartWidget
 {
     use InteractsWithPageFilters;
 
+    protected static ?int $sort = 4;
+
     protected ?string $heading = 'Progres Kompetensi per Materi';
 
     protected ?string $description =
@@ -74,6 +76,7 @@ class ProgresMateri extends ChartWidget
         $penilaians = Kelulusan::query()
             ->whereIn('siswa_id', $siswaIds)
             ->whereIn('materi_id', $materis->pluck('id'))
+            ->orderByDesc('id')
             ->get()
             ->groupBy('materi_id');
 
@@ -83,10 +86,12 @@ class ProgresMateri extends ChartWidget
 
         foreach ($materis as $materi) {
 
+            // Gunakan hasil penilaian terakhir tiap siswa agar ujian ulang
+            // tidak membuat jumlah siswa di grafik menjadi berlebih.
             $penilaianMateri = $penilaians->get(
                 $materi->id,
                 collect()
-            );
+            )->unique('siswa_id');
 
             /*
              * Lulus = nilai >= 75
@@ -113,10 +118,7 @@ class ProgresMateri extends ChartWidget
             /*
              * Jumlah siswa yang sudah mempunyai penilaian
              */
-            $sudahDiuji = $penilaianMateri
-                ->pluck('siswa_id')
-                ->unique()
-                ->count();
+            $sudahDiuji = $penilaianMateri->count();
 
             /*
              * Belum diuji = total siswa - siswa yang sudah diuji

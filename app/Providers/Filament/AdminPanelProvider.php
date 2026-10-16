@@ -7,6 +7,11 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Filament\Pages\Dashboard;
+use App\Filament\Widgets\AksesCepat;
+use App\Filament\Widgets\MatriksKompetensi;
+use App\Filament\Widgets\ProgresKelas;
+use App\Filament\Widgets\ProgresMateri;
+use App\Filament\Widgets\StatistikAkademik;
 use Filament\Enums\ThemeMode;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -76,8 +81,14 @@ class AdminPanelProvider extends PanelProvider
                 in: app_path('Filament/Widgets'),
                 for: 'App\Filament\Widgets'
             )
-            // Daftar widget eksplisit tetap kosong sesuai konfigurasi dashboard.
-            ->widgets([])
+            // Dashboard menampilkan ringkasan, pintasan, grafik, dan matriks.
+            ->widgets([
+                StatistikAkademik::class,
+                AksesCepat::class,
+                ProgresKelas::class,
+                ProgresMateri::class,
+                MatriksKompetensi::class,
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

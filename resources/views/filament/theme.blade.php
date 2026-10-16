@@ -56,6 +56,41 @@
         box-shadow: 0 1px 2px rgb(16 24 40 / 5%);
     }
 
+    /* Tabel lebih mudah dipindai, tanpa mengubah komponen atau alur kerja. */
+    .fi-ta-ctn {
+        overflow: hidden;
+        border-radius: 1rem;
+        transition: box-shadow .18s ease, border-color .18s ease;
+    }
+
+    html:not(.dark) .fi-ta-ctn {
+        border-color: #e5eaf0;
+        box-shadow: 0 1px 2px rgb(16 24 40 / 4%);
+    }
+
+    html:not(.dark) .fi-ta-header-ctn {
+        background: #fff;
+        border-bottom-color: #e5eaf0;
+    }
+
+    html:not(.dark) .fi-ta-table thead th {
+        background: #f8fafc;
+        color: #475467;
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .035em;
+        text-transform: uppercase;
+    }
+
+    html:not(.dark) .fi-ta-table tbody tr:hover {
+        background: #fffbf5;
+    }
+
+    .fi-quick-link:focus-visible {
+        outline: 2px solid rgb(245 158 11 / 75%);
+        outline-offset: 2px;
+    }
+
     .fi-btn {
         border-radius: .65rem;
     }
