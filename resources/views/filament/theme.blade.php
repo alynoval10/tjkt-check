@@ -37,7 +37,7 @@
 
     .fi-sidebar-item-btn {
         border-radius: .65rem;
-        transition: background-color .15s ease, color .15s ease;
+        transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
     }
 
     html:not(.dark) .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
@@ -60,6 +60,22 @@
         border-radius: .65rem;
     }
 
+    @keyframes admin-page-enter {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fi-page {
+        animation: admin-page-enter 180ms ease-out both;
+    }
+
     html:not(.dark) .fi-simple-layout {
         background: #f5f7fa;
     }
@@ -79,6 +95,17 @@
     @media (max-width: 1023px) {
         .fi-sidebar.fi-sidebar-open {
             box-shadow: 0 16px 40px rgb(16 24 40 / 16%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: .01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: .01ms !important;
         }
     }
 </style>
