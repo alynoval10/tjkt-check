@@ -19,6 +19,13 @@ class ProgresKelas extends StatsOverviewWidget
 
     protected ?string $description = 'Monitoring pencapaian kompetensi siswa berdasarkan kelas.';
 
+    public function updatedPageFilters(
+        mixed $value = null,
+        ?string $key = null
+    ): void {
+        $this->cachedStats = null;
+    }
+
     protected function getStats(): array
     {
         $kelasId = $this->pageFilters['kelas_id'] ?? null;

@@ -39,10 +39,18 @@ class MatriksKompetensi extends Widget
 
     protected function getViewData(): array
     {
-        // Filter reaktif dari Dashboard diperbarui saat hidrasi, bukan updatedPageFilters.
+        // Pastikan matriks selalu konsisten dengan filter saat widget dirender.
         $this->muatData();
 
         return [];
+    }
+
+    /** Refresh matrix data when the dashboard class filter changes. */
+    public function updatedPageFilters(
+        mixed $value = null,
+        ?string $key = null
+    ): void {
+        $this->muatData();
     }
 
     // Filter mengubah matriks dan data yang akan diekspor secara bersamaan.
