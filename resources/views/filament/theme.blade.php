@@ -43,15 +43,25 @@
     }
 
     .fi-sidebar-item-btn {
-        color: #c3c9df;
+        color: #f1f4ff !important;
         border-radius: .8rem;
         transition: background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    .fi-sidebar-item-label,
+    .fi-sidebar-item-icon {
+        color: #f1f4ff !important;
     }
 
     .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
         color: #fff !important;
         background: var(--app-navy-soft) !important;
         transform: translateX(2px);
+    }
+
+    .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-label,
+    .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-icon {
+        color: #fff !important;
     }
 
     .fi-sidebar-item.fi-active .fi-sidebar-item-btn {
