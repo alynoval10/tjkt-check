@@ -7,11 +7,6 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Filament\Pages\Dashboard;
-use App\Filament\Widgets\AksesCepat;
-use App\Filament\Widgets\MatriksKompetensi;
-use App\Filament\Widgets\ProgresKelas;
-use App\Filament\Widgets\ProgresMateri;
-use App\Filament\Widgets\StatistikAkademik;
 use Filament\Enums\ThemeMode;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -25,6 +20,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Auth\Login;
+use App\Filament\Widgets\DashboardOverview;
+use App\Filament\Widgets\MatriksKompetensi;
 use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Storage;
 class AdminPanelProvider extends PanelProvider
@@ -77,16 +74,9 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(
-                in: app_path('Filament/Widgets'),
-                for: 'App\Filament\Widgets'
-            )
-            // Dashboard menampilkan ringkasan, pintasan, grafik, dan matriks.
+            // Widget dashboard didaftarkan secara eksplisit untuk menjaga isi dan urutannya.
             ->widgets([
-                StatistikAkademik::class,
-                AksesCepat::class,
-                ProgresKelas::class,
-                ProgresMateri::class,
+                DashboardOverview::class,
                 MatriksKompetensi::class,
             ])
             ->middleware([

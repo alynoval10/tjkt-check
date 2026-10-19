@@ -13,12 +13,20 @@ class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
 
+    public function getColumns(): int | array
+    {
+        return [
+            'default' => 1,
+            '2xl' => 12,
+        ];
+    }
+
     public function filtersForm(Schema $schema): Schema
     {
         return $schema
             ->components([
                 Section::make('Filter Dashboard')
-                    ->description('Pilih kelas untuk melihat progres kompetensi siswa.')
+                    ->description('Pilih satu rombel untuk memusatkan ringkasan. Kosongkan pilihan untuk melihat seluruh kelas aktif.')
                     ->schema([
                         Select::make('kelas_id')
                             ->label('Kelas')
@@ -29,7 +37,7 @@ class Dashboard extends BaseDashboard
                                     ->orderBy('nama')
                                     ->pluck('nama', 'id')
                             )
-                            ->placeholder('Pilih kelas')
+                            ->placeholder('Semua kelas')
                             ->searchable()
                             ->preload()
                             ->live(),
