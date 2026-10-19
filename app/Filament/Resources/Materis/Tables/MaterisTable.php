@@ -22,6 +22,11 @@ class MaterisTable
     {
         return $table
             ->columns([
+                TextColumn::make('kode')
+                    ->label('Kode')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('nama')
                     ->label('Nama Materi')
                     ->searchable()
