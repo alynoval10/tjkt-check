@@ -64,14 +64,18 @@
                     <p class="mt-1 text-sm text-gray-500">Buat rombel terlebih dahulu untuk memulai proses akademik.</p>
                 </div>
             @else
-                @php($semuaRombel = $this->kelas)
+                @php
+                    $semuaRombel = $this->kelas;
+                @endphp
                 <div class="space-y-6">
                     @foreach ([
                         'XII' => ['step' => '01', 'title' => 'Kelulusan kelas XII', 'description' => 'Siswa yang diluluskan menjadi alumni. Riwayat nilai dan materi tetap tersimpan.', 'tone' => 'success'],
                         'XI' => ['step' => '02', 'title' => 'Kenaikan kelas XI', 'description' => 'Naikkan rombel XI ke tingkat XII sebelum memproses kelas X.', 'tone' => 'info'],
                         'X' => ['step' => '03', 'title' => 'Kenaikan kelas X', 'description' => 'Naikkan rombel X ke tingkat XI setelah nama rombel tujuan tersedia.', 'tone' => 'warning'],
                     ] as $tingkat => $bagian)
-                        @php($rombelTingkat = $semuaRombel->where('tingkat', $tingkat))
+                        @php
+                            $rombelTingkat = $semuaRombel->where('tingkat', $tingkat);
+                        @endphp
                         <section class="overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10">
                             <div class="flex flex-col gap-3 border-b border-gray-200 bg-gray-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/[.03]">
                                 <div class="flex items-start gap-3">
