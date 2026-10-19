@@ -57,6 +57,7 @@ class MaterisTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('kode', 'asc')
             ->filters([
                 SelectFilter::make('tingkat')
                     ->label('Tingkat')
