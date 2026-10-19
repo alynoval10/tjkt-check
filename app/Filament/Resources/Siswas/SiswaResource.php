@@ -85,6 +85,11 @@ public static function getPluralModelLabel(): string
         ])
 
         ->headerActions([
+            Action::make('tambahSiswa')
+                ->label('Tambah Siswa')
+                ->icon('heroicon-o-plus')
+                ->url(static::getUrl('create')),
+
               Action::make('downloadTemplate')
         ->label('Download Template')
         ->icon('heroicon-o-document-arrow-down')
