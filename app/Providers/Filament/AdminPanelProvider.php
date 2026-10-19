@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             // Identitas aplikasi pada panel dan halaman login.
             ->brandName(fn () => SiteSetting::value('site_title', 'TJKT CHECK'))
             ->brandLogo(fn () => ($logo = SiteSetting::value('site_logo'))
