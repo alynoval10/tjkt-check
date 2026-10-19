@@ -1,9 +1,12 @@
 <x-filament-panels::page>
-    <div class="space-y-5">
+    <div class="space-y-6">
         <x-filament::section>
-            <div class="grid gap-4 md:grid-cols-[minmax(0,1fr)_2fr] md:items-end">
+            <x-slot name="heading">Periode tujuan</x-slot>
+            <x-slot name="description">Pilih periode untuk mencatat proses kenaikan atau kelulusan rombel.</x-slot>
+
+            <div class="grid gap-5 lg:grid-cols-[minmax(16rem,1fr)_minmax(0,1.5fr)] lg:items-end">
                 <div>
-                    <label for="periodeAkademikId" class="mb-2 block text-sm font-medium">Periode tujuan</label>
+                    <label for="periodeAkademikId" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Periode akademik</label>
                     <x-filament::input.wrapper>
                         <x-filament::input.select id="periodeAkademikId" wire:model.live="periodeAkademikId">
                             <option value="">Pilih periode akademik</option>
@@ -13,79 +16,113 @@
                         </x-filament::input.select>
                     </x-filament::input.wrapper>
                 </div>
-                <div class="text-sm text-gray-500">
-                    Rombel dan siswa tetap bersama. Sistem hanya mengubah tingkat dan nama rombel.
-                    Proses dari kelas XII, lalu XI, lalu X agar nama tujuan tidak bertabrakan.
+
+                <div class="flex gap-3 rounded-xl bg-primary-50 p-4 text-sm leading-6 text-primary-800 dark:bg-primary-400/10 dark:text-primary-200">
+                    <x-filament::icon icon="heroicon-o-information-circle" class="mt-0.5 size-5 shrink-0" />
+                    <p>Rombel dan siswa tetap bersama. Naikkan rombel dari XII, lalu XI, lalu X supaya nama tingkat tujuan tersedia.</p>
                 </div>
             </div>
+
             @if ($this->periodeOptions === [])
-                <p class="mt-3 text-sm text-warning-600">Belum ada periode akademik. Buat periode tujuan terlebih dahulu di menu Periode Akademik.</p>
+                <div class="mt-4 rounded-xl border border-warning-300 bg-warning-50 p-4 text-sm text-warning-800 dark:border-warning-400/20 dark:bg-warning-400/10 dark:text-warning-200">
+                    Belum ada periode akademik. Buat periode tujuan terlebih dahulu di menu Periode Akademik.
+                </div>
             @endif
         </x-filament::section>
 
         <x-filament::section>
-            <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
-                <div>
-                    <h2 class="font-semibold">Rombel aktif</h2>
-                    <p class="text-sm text-gray-500">Tinjau nama baru sebelum menaikkan rombel.</p>
-                </div>
-                <a href="{{ \App\Filament\Resources\Kelas\KelasResource::getUrl('create') }}" class="inline-flex items-center rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white hover:bg-primary-500">
-                    Buat rombel baru
-                </a>
-            </div>
+            <x-slot name="heading">Rombel aktif</x-slot>
+            <x-slot name="description">Periksa nama tujuan dan jumlah siswa sebelum memproses setiap rombel.</x-slot>
+            <x-slot name="afterHeader">
+                <x-filament::button
+                    tag="a"
+                    :href="\App\Filament\Resources\Kelas\KelasResource::getUrl('create')"
+                    icon="heroicon-o-plus"
+                    color="gray"
+                    size="sm"
+                >
+                    Buat rombel
+                </x-filament::button>
+            </x-slot>
 
             @if ($this->kelas->isEmpty())
-                <p class="text-sm text-gray-500">Belum ada rombel aktif. Buat rombel terlebih dahulu.</p>
+                <div class="rounded-xl border border-dashed border-gray-300 px-6 py-10 text-center dark:border-white/15">
+                    <x-filament::icon icon="heroicon-o-academic-cap" class="mx-auto size-9 text-gray-400" />
+                    <p class="mt-3 font-medium text-gray-950 dark:text-white">Belum ada rombel aktif</p>
+                    <p class="mt-1 text-sm text-gray-500">Buat rombel terlebih dahulu untuk memulai proses akademik.</p>
+                </div>
             @else
-                <div class="divide-y divide-gray-200 dark:divide-white/10">
+                <div class="grid gap-4 xl:grid-cols-2">
                     @foreach ($this->kelas as $kelas)
                         @php
                             $jumlahAktif = $kelas->siswa_aktif_count;
                             $namaBaruDefault = $this->namaRombelTujuanDefault($kelas);
+                            $tingkatTujuan = $kelas->tingkat === 'X' ? 'XI' : 'XII';
                         @endphp
-                        <article class="flex flex-col gap-4 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between">
-                            <div class="min-w-48">
-                                <h3 class="font-semibold">{{ $kelas->nama }}</h3>
-                                <p class="text-sm text-gray-500">Kelas {{ $kelas->tingkat }} · {{ $jumlahAktif }} siswa aktif</p>
+
+                        <article class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-200 hover:border-primary-300 hover:shadow-md dark:border-white/10 dark:bg-white/[.03]">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex min-w-0 items-center gap-3">
+                                    <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-700 dark:bg-primary-400/10 dark:text-primary-300">
+                                        <x-filament::icon icon="heroicon-o-academic-cap" class="size-5" />
+                                    </span>
+                                    <div class="min-w-0">
+                                        <h3 class="truncate text-base font-semibold text-gray-950 dark:text-white">{{ $kelas->nama }}</h3>
+                                        <p class="mt-1 text-sm text-gray-500">Tingkat {{ $kelas->tingkat }}</p>
+                                    </div>
+                                </div>
+                                <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                                    <x-filament::icon icon="heroicon-m-users" class="size-4" />
+                                    {{ $jumlahAktif }} siswa
+                                </span>
                             </div>
 
-                            @if ($kelas->tingkat === 'XII')
-                                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-                                    <p class="text-sm text-gray-500">Luluskan seluruh rombel dan arsipkan kelas XII.</p>
-                                    <x-filament::button
-                                        icon="heroicon-o-academic-cap"
-                                        color="success"
-                                        :disabled="! $periodeAkademikId || $jumlahAktif === 0"
-                                        wire:click="luluskanKelas({{ $kelas->id }})"
-                                        wire:confirm="Yakin meluluskan {{ $jumlahAktif }} siswa dari {{ $kelas->nama }}? Mereka akan berstatus alumni dan riwayat nilainya tetap tersimpan."
-                                    >
-                                        Luluskan rombel
-                                    </x-filament::button>
-                                </div>
-                            @else
-                                <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-end lg:max-w-2xl">
-                                    <div class="min-w-0 flex-1">
-                                        <label for="nama-rombel-{{ $kelas->id }}" class="mb-1 block text-xs font-medium text-gray-500">Nama rombel setelah naik ke kelas {{ $kelas->tingkat === 'X' ? 'XI' : 'XII' }}</label>
-                                        <x-filament::input.wrapper>
-                                            <x-filament::input
-                                                id="nama-rombel-{{ $kelas->id }}"
-                                                type="text"
-                                                wire:model.live="namaRombelBaru.{{ $kelas->id }}"
-                                                placeholder="{{ $namaBaruDefault }}"
-                                            />
-                                        </x-filament::input.wrapper>
+                            <div class="mt-5 border-t border-gray-100 pt-5 dark:border-white/10">
+                                @if ($kelas->tingkat === 'XII')
+                                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <p class="font-medium text-gray-950 dark:text-white">Siap diluluskan</p>
+                                            <p class="mt-1 text-sm leading-5 text-gray-500">Siswa menjadi alumni dan rombel ini diarsipkan.</p>
+                                        </div>
+                                        <x-filament::button
+                                            icon="heroicon-o-academic-cap"
+                                            color="success"
+                                            :disabled="! $periodeAkademikId || $jumlahAktif === 0"
+                                            wire:click="luluskanKelas({{ $kelas->id }})"
+                                            wire:confirm="Yakin meluluskan {{ $jumlahAktif }} siswa dari {{ $kelas->nama }}? Mereka akan berstatus alumni dan riwayat nilainya tetap tersimpan."
+                                        >
+                                            Luluskan rombel
+                                        </x-filament::button>
                                     </div>
-                                    <x-filament::button
-                                        icon="heroicon-o-arrow-up-circle"
-                                        color="primary"
-                                        :disabled="! $periodeAkademikId || $jumlahAktif === 0"
-                                        wire:click="prosesKenaikan({{ $kelas->id }})"
-                                        wire:confirm="Yakin mengubah {{ $kelas->nama }} menjadi {{ $namaRombelBaru[$kelas->id] ?? $namaBaruDefault }}? Semua siswa tetap di rombel ini."
-                                    >
-                                        Naikkan rombel
-                                    </x-filament::button>
-                                </div>
-                            @endif
+                                @else
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label for="nama-rombel-{{ $kelas->id }}" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Nama rombel setelah naik ke {{ $tingkatTujuan }}
+                                            </label>
+                                            <x-filament::input.wrapper>
+                                                <x-filament::input
+                                                    id="nama-rombel-{{ $kelas->id }}"
+                                                    type="text"
+                                                    wire:model.live="namaRombelBaru.{{ $kelas->id }}"
+                                                    placeholder="{{ $namaBaruDefault }}"
+                                                />
+                                            </x-filament::input.wrapper>
+                                        </div>
+                                        <div class="flex flex-wrap items-center justify-between gap-3">
+                                            <p class="text-xs text-gray-500">Siswa tetap berada di rombel yang sama.</p>
+                                            <x-filament::button
+                                                icon="heroicon-o-arrow-up-circle"
+                                                :disabled="! $periodeAkademikId || $jumlahAktif === 0"
+                                                wire:click="prosesKenaikan({{ $kelas->id }})"
+                                                wire:confirm="Yakin mengubah {{ $kelas->nama }} menjadi {{ $namaRombelBaru[$kelas->id] ?? $namaBaruDefault }}? Semua siswa tetap di rombel ini."
+                                            >
+                                                Naikkan rombel
+                                            </x-filament::button>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         </article>
                     @endforeach
                 </div>
