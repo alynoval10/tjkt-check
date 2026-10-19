@@ -6,7 +6,9 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use App\Models\Materi;
 use Illuminate\Support\Facades\Storage;
 class MateriForm
 {
@@ -15,8 +17,9 @@ class MateriForm
         return $schema->components([
             TextInput::make('kode')
                 ->label('Kode Materi')
-                ->required()
-                ->maxLength(255),
+                ->disabled()
+                ->dehydrated(false)
+                ->helperText('Kode dibuat otomatis sesuai tingkat dan urutan materi.'),
 
             TextInput::make('nama')
                 ->label('Nama Materi')
@@ -30,6 +33,8 @@ class MateriForm
                     'XI' => 'Kelas XI',
                     'XII' => 'Kelas XII',
                 ])
+                ->live()
+                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('kode', filled($state) ? Materi::kodeBerikutnya($state) : null))
                 ->required(),
 
             Textarea::make('deskripsi')

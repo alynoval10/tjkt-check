@@ -79,9 +79,11 @@ class DemoTjktSeeder extends Seeder
         ])->map(function ($data) {
             return Materi::updateOrCreate(
                 [
-                    'kode' => $data['kode'],
+                    'nama' => $data['nama'],
+                    'tingkat' => $data['tingkat'],
                 ],
                 [
+                    'kode' => $data['kode'],
                     'nama' => $data['nama'],
                     'tingkat' => $data['tingkat'],
                 ]
@@ -118,9 +120,11 @@ class DemoTjktSeeder extends Seeder
         ])->map(function ($data) {
             return Materi::updateOrCreate(
                 [
-                    'kode' => $data['kode'],
+                    'nama' => $data['nama'],
+                    'tingkat' => $data['tingkat'],
                 ],
                 [
+                    'kode' => $data['kode'],
                     'nama' => $data['nama'],
                     'tingkat' => $data['tingkat'],
                 ]
