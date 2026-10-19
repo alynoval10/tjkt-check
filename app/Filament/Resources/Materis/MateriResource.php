@@ -15,10 +15,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
 use UnitEnum;
 
 class MateriResource extends Resource
@@ -63,26 +59,7 @@ public static function getPluralModelLabel(): string
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('kode')->label('Kode')->searchable()->sortable(),
-                TextColumn::make('nama')->label('Nama Materi')->searchable()->sortable(),
-                TextColumn::make('tingkat')
-    ->label('Tingkat')
-    ->badge()
-    ->icon(fn (string $state): string => match ($state) {
-        'X'   => 'heroicon-m-academic-cap',
-        'XI'  => 'heroicon-m-book-open',
-        'XII' => 'heroicon-m-trophy',
-        default => 'heroicon-m-tag',
-    })
-    ->color(fn (string $state): string => match ($state) {
-        'X'   => 'success',
-        'XI'  => 'info',
-        'XII' => 'warning',
-        default => 'gray',
-    }),
-            ]);
+        return MaterisTable::configure($table);
     }
 
     public static function getRelations(): array
