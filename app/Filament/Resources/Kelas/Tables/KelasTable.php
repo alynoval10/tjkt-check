@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Kelas\Tables;
 
+use App\Filament\Resources\Kelas\KelasResource;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -20,6 +22,12 @@ class KelasTable
                 TextColumn::make('siswas_count')->label('Jumlah Siswa')->counts('siswas'),
             ])
             ->defaultSort('tingkat')
+            ->headerActions([
+                Action::make('tambahKelas')
+                    ->label('Tambah Kelas')
+                    ->icon('heroicon-o-plus')
+                    ->url(KelasResource::getUrl('create')),
+            ])
             ->recordActions([
                 ViewAction::make()
                     ->label('Lihat Anggota')
