@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Materis\Tables;
 
+use App\Filament\Resources\Materis\MateriResource;
 use App\Models\Materi;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -61,6 +62,11 @@ class MaterisTable
                     ]),
             ])
             ->headerActions([
+                Action::make('tambahMateri')
+                    ->label('Tambah Materi')
+                    ->icon('heroicon-o-plus')
+                    ->url(MateriResource::getUrl('create')),
+
                 Action::make('sesuaikanKodeLama')
                     ->label('Sesuaikan Kode Lama')
                     ->icon('heroicon-o-arrow-path')
