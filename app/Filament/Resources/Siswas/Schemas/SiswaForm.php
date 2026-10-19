@@ -15,8 +15,7 @@ class SiswaForm
             TextInput::make('nama')->label('Nama Siswa')->required(),
             Select::make('kelas_id')
                 ->label('Kelas')
-                ->relationship('rombel', 'nama')
-                ->modifyQueryUsing(function ($query, $record) {
+                ->relationship('rombel', 'nama', modifyQueryUsing: function ($query, $record) {
                     return $query->where(function ($query) use ($record): void {
                         $query->where('is_active', true);
 
