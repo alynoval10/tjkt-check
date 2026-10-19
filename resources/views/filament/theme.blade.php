@@ -1,62 +1,83 @@
 <style>
-    /* Tema admin terang dengan aksen amber, mengikuti tampilan halaman login. */
-    html:not(.dark) body.fi-body {
-        background: #f3f6fa !important;
+    :root {
+        --app-navy: #11172f;
+        --app-navy-soft: #1a2344;
+        --app-indigo: #5146e5;
+        --app-blue: #3478f6;
+        --app-canvas: #f4f6fb;
+        --app-border: #e6eaf2;
+    }
+
+    html:not(.dark) body.fi-body,
+    html:not(.dark) .fi-main-ctn {
+        background: var(--app-canvas) !important;
         color: #172033;
     }
 
-    html:not(.dark) .fi-main-ctn {
-        background: #f3f6fa;
+    /* Sidebar navy dan menu gradient mengikuti referensi ClassTrack. */
+    .fi-sidebar {
+        color: #e7eaf5;
+        background: var(--app-navy) !important;
+        border-right: 1px solid rgb(255 255 255 / 7%);
     }
 
-    html:not(.dark) .fi-sidebar {
-        background: #fff !important;
-        border-right: 1px solid #e5eaf0;
-    }
-
-    html:not(.dark) .fi-sidebar-header,
-    html:not(.dark) .fi-body-has-topbar .fi-sidebar-header {
-        background: #fff;
-        border-bottom: 1px solid #eef1f5;
+    .fi-sidebar-header,
+    .fi-body-has-topbar .fi-sidebar-header {
+        color: #fff;
+        background: var(--app-navy) !important;
+        border-bottom: 1px solid rgb(255 255 255 / 8%);
         box-shadow: none;
     }
 
-    html:not(.dark) .fi-topbar {
-        background: #fff;
-        border-bottom: 1px solid #e5eaf0;
-        box-shadow: none;
+    .fi-sidebar-header .fi-logo,
+    .fi-sidebar-header .fi-brand-name {
+        color: #fff;
     }
 
-    html:not(.dark) .fi-sidebar-group-label {
-        color: #667085;
-        font-size: .7rem;
+    .fi-sidebar-group-label {
+        color: #8994b7 !important;
+        font-size: .68rem;
         font-weight: 700;
-        letter-spacing: .08em;
+        letter-spacing: .1em;
         text-transform: uppercase;
     }
 
     .fi-sidebar-item-btn {
-        border-radius: .65rem;
-        transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
+        color: #c3c9df;
+        border-radius: .8rem;
+        transition: background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
     }
 
-    html:not(.dark) .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
-        background: #f3f6fa;
-        color: #172033;
+    .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-btn:hover {
+        color: #fff !important;
+        background: var(--app-navy-soft) !important;
+        transform: translateX(2px);
     }
 
-    html:not(.dark) .fi-sidebar-item.fi-active .fi-sidebar-item-btn {
-        background: #fff5e8;
-        color: #b45309;
+    .fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+        color: #fff !important;
+        background: linear-gradient(110deg, var(--app-indigo), var(--app-blue)) !important;
+        box-shadow: 0 8px 20px rgb(52 120 246 / 22%);
+    }
+
+    .fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+        color: #fff !important;
+    }
+
+    html:not(.dark) .fi-topbar {
+        background: rgb(255 255 255 / 92%);
+        border-bottom: 1px solid var(--app-border);
+        box-shadow: 0 2px 10px rgb(18 30 58 / 3%);
+        backdrop-filter: blur(14px);
     }
 
     html:not(.dark) .fi-section {
-        border-color: #e5eaf0;
+        border-color: var(--app-border);
         border-radius: 1rem;
-        box-shadow: 0 1px 2px rgb(16 24 40 / 5%);
+        background: #fff;
+        box-shadow: 0 2px 8px rgb(16 24 40 / 4%);
     }
 
-    /* Tabel lebih mudah dipindai, tanpa mengubah komponen atau alur kerja. */
     .fi-ta-ctn {
         overflow: hidden;
         border-radius: 1rem;
@@ -64,26 +85,49 @@
     }
 
     html:not(.dark) .fi-ta-ctn {
-        border-color: #e5eaf0;
-        box-shadow: 0 1px 2px rgb(16 24 40 / 4%);
+        border-color: var(--app-border);
+        background: #fff;
+        box-shadow: 0 2px 8px rgb(16 24 40 / 4%);
     }
 
     html:not(.dark) .fi-ta-header-ctn {
         background: #fff;
-        border-bottom-color: #e5eaf0;
+        border-bottom-color: var(--app-border);
     }
 
     html:not(.dark) .fi-ta-table thead th {
-        background: #f8fafc;
-        color: #475467;
-        font-size: .72rem;
+        background: #f7f8fc;
+        color: #536079;
+        font-size: .7rem;
         font-weight: 700;
-        letter-spacing: .035em;
+        letter-spacing: .055em;
         text-transform: uppercase;
     }
 
     html:not(.dark) .fi-ta-table tbody tr:hover {
-        background: #fffbf5;
+        background: #f7f8ff;
+    }
+
+    html:not(.dark) .fi-wi-stats-overview-stat {
+        border: 1px solid var(--app-border);
+        border-radius: 1rem;
+        background: linear-gradient(145deg, #fff, #fafbff);
+        box-shadow: 0 3px 12px rgb(16 24 40 / 4%);
+        transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    html:not(.dark) .fi-wi-stats-overview-stat:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgb(49 61 105 / 9%);
+    }
+
+    .fi-btn {
+        border-radius: .7rem;
+        transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .fi-btn:active {
+        transform: translateY(1px);
     }
 
     .fi-quick-link:focus-visible {
@@ -112,13 +156,16 @@
     }
 
     html:not(.dark) .fi-simple-layout {
-        background: #f5f7fa;
+        background:
+            radial-gradient(ellipse at 8% 8%, rgb(99 102 241 / 12%), transparent 34%),
+            radial-gradient(ellipse at 92% 92%, rgb(56 189 248 / 10%), transparent 36%),
+            #f4f6fb;
     }
 
     html:not(.dark) .fi-simple-main {
-        border: 1px solid #e5e7eb;
-        border-radius: 1rem;
-        box-shadow: 0 12px 32px rgb(16 24 40 / 6%);
+        border: 1px solid var(--app-border);
+        border-radius: 1.25rem;
+        box-shadow: 0 24px 60px rgb(28 37 75 / 10%);
     }
 
     .fi-simple-header .fi-logo {
@@ -130,6 +177,12 @@
     @media (max-width: 1023px) {
         .fi-sidebar.fi-sidebar-open {
             box-shadow: 0 16px 40px rgb(16 24 40 / 16%);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .fi-page {
+            padding-inline: .25rem;
         }
     }
 

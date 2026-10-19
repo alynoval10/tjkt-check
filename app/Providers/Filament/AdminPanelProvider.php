@@ -64,7 +64,7 @@ class AdminPanelProvider extends PanelProvider
                 'Pemeliharaan',
             ])
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo,
             ])
             ->discoverResources(
                 in: app_path('Filament/Resources'),
