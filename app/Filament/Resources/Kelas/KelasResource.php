@@ -9,6 +9,7 @@ use App\Filament\Resources\Kelas\Pages\ViewKelas;
 use App\Filament\Resources\Kelas\Schemas\KelasForm;
 use App\Filament\Resources\Kelas\Schemas\KelasInfolist;
 use App\Filament\Resources\Kelas\Tables\KelasTable;
+use App\Filament\Resources\Kelas\RelationManagers\SiswasRelationManager;
 use App\Models\Kelas;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -50,6 +51,13 @@ class KelasResource extends Resource
     public static function table(Table $table): Table
     {
         return KelasTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            SiswasRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

@@ -12,7 +12,7 @@ class KelasInfolist
         return $schema->components([
             TextEntry::make('tingkat')->label('Tingkat'),
             TextEntry::make('nama')->label('Nama Kelas'),
-            TextEntry::make('siswas_count')->label('Jumlah Siswa')->state(fn ($record) => $record->siswas()->count()),
+            TextEntry::make('siswas_count')->label('Jumlah Siswa Aktif')->state(fn ($record) => $record->siswas()->where('status', 'aktif')->count()),
         ]);
     }
 }

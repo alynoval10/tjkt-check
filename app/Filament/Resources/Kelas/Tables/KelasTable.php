@@ -20,7 +20,12 @@ class KelasTable
                 TextColumn::make('siswas_count')->label('Jumlah Siswa')->counts('siswas'),
             ])
             ->defaultSort('tingkat')
-            ->recordActions([ViewAction::make(), EditAction::make()])
+            ->recordActions([
+                ViewAction::make()
+                    ->label('Lihat Anggota')
+                    ->icon('heroicon-o-users'),
+                EditAction::make(),
+            ])
             ->toolbarActions([
                 BulkActionGroup::make([DeleteBulkAction::make()]),
             ]);
