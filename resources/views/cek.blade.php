@@ -89,7 +89,7 @@
                     <div class="relative order-2 mx-auto flex w-full max-w-sm items-end justify-center self-stretch xl:order-1 xl:max-w-none">
                         <div class="absolute bottom-5 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-blue-100/80 sm:h-72 sm:w-72"></div>
                         <div class="absolute bottom-5 left-1/2 h-44 w-72 -translate-x-1/2 rounded-[50%] bg-gradient-to-r from-blue-100/70 via-white/80 to-indigo-100/70 blur-sm sm:w-80"></div>
-                        <img src="{{ asset('images/siswa-mural.png') }}" alt="Ilustrasi siswa dan siswi TJKT memakai seragam prakerin" class="relative z-10 h-auto max-h-[23rem] w-full object-contain object-bottom drop-shadow-[0_18px_20px_rgba(30,64,175,0.12)] sm:max-h-[28rem] xl:max-h-[30rem]">
+                        <img src="{{ asset('images/siswa-mural.png') }}?v={{ filemtime(public_path('images/siswa-mural.png')) }}" alt="Ilustrasi siswa dan siswi TJKT memakai seragam prakerin" class="relative z-10 h-auto max-h-[23rem] w-full object-contain object-bottom drop-shadow-[0_18px_20px_rgba(30,64,175,0.12)] sm:max-h-[28rem] xl:max-h-[30rem]">
                     </div>
 
                     <div class="relative order-1 xl:order-2">
