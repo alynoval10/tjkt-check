@@ -18,10 +18,10 @@ class DashboardOverview extends Widget
 
     protected function getViewData(): array
     {
+        $kelasFilter = $this->pageFilters['kelas_id'] ?? null;
+
         return app(DashboardKompetensi::class)->ringkasan(
-            isset($this->pageFilters['kelas_id']) && $this->pageFilters['kelas_id'] !== ''
-                ? (int) $this->pageFilters['kelas_id']
-                : null,
+            is_numeric($kelasFilter) ? (int) $kelasFilter : null,
         );
     }
 }

@@ -32,7 +32,14 @@
             </x-filament::button>
         </div>
 
-        @if (! $kelasIdAktif)
+        @if ($semuaKelasAktif)
+
+            <div style="display:flex;align-items:flex-start;gap:12px;border:1px solid rgba(59,130,246,.2);border-radius:12px;background:rgba(59,130,246,.06);padding:16px">
+                <x-filament::icon icon="heroicon-o-information-circle" style="width:20px;height:20px;flex:none;color:#2563eb" />
+                <p>Ringkasan di atas mencakup semua kelas aktif. Pilih satu kelas untuk melihat matriks kompetensi siswanya.</p>
+            </div>
+
+        @elseif (! $kelasIdAktif)
 
             <p>
                 Tidak ada kelas yang tersedia.

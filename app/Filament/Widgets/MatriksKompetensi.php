@@ -27,6 +27,8 @@ class MatriksKompetensi extends Widget
 
     public ?string $tingkatKelas = null;
 
+    public bool $semuaKelasAktif = false;
+
     public array $materis = [];
 
     public array $siswas = [];
@@ -79,6 +81,15 @@ class MatriksKompetensi extends Widget
     protected function muatData(): void
     {
         $kelasId = $this->pageFilters['kelas_id'] ?? null;
+
+        if ($kelasId === 'all') {
+            $this->resetData();
+            $this->semuaKelasAktif = true;
+
+            return;
+        }
+
+        $this->semuaKelasAktif = false;
 
         $kelas = $kelasId
             ? Kelas::query()->where('is_active', true)->find($kelasId)
@@ -187,6 +198,7 @@ class MatriksKompetensi extends Widget
         $this->kelasIdAktif = null;
         $this->namaKelas = null;
         $this->tingkatKelas = null;
+        $this->semuaKelasAktif = false;
         $this->materis = [];
         $this->siswas = [];
         $this->materiOptions = [];

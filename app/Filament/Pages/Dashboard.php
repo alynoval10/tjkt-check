@@ -26,18 +26,20 @@ class Dashboard extends BaseDashboard
         return $schema
             ->components([
                 Section::make('Filter Dashboard')
-                    ->description('Pilih satu rombel untuk memusatkan ringkasan. Kosongkan pilihan untuk melihat seluruh kelas aktif.')
+                    ->description('Pilih Semua Kelas untuk melihat ringkasan seluruh rombel aktif, atau pilih satu rombel untuk memusatkan data.')
                     ->schema([
                         Select::make('kelas_id')
                             ->label('Kelas')
                             ->options(
-                                Kelas::query()
+                                ['all' => 'Semua Kelas'] + Kelas::query()
                                     ->where('is_active', true)
                                     ->orderBy('tingkat')
                                     ->orderBy('nama')
                                     ->pluck('nama', 'id')
+                                    ->all()
                             )
-                            ->placeholder('Semua kelas')
+                            ->default('all')
+                            ->placeholder('Pilih kelas')
                             ->searchable()
                             ->preload()
                             ->live(),
