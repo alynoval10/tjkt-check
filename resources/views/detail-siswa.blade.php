@@ -125,30 +125,30 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-slate-100 text-slate-800">
+<body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
 
     {{-- Navbar --}}
-    <header class="no-print border-b border-blue-800 bg-blue-700 text-white shadow-sm">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <header class="no-print sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 text-slate-900 shadow-sm backdrop-blur-xl">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
 
             <a
                 href="{{ route('cek-siswa.index') }}"
                 class="flex items-center gap-3"
             >
                 @if ($appLogo)
-                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($appLogo) }}" alt="Logo {{ $appTitle }}" class="h-11 w-11 rounded-xl bg-white object-contain p-1">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($appLogo) }}" alt="Logo {{ $appTitle }}" class="h-11 w-11 rounded-2xl border border-slate-200 bg-white object-contain p-1 shadow-sm">
                 @else
-                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-xl font-bold ring-1 ring-white/20">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-xl font-bold text-blue-700 ring-1 ring-blue-100">
                         {{ mb_strtoupper(mb_substr($appTitle, 0, 1)) }}
                     </div>
                 @endif
 
                 <div>
-                    <h1 class="text-lg font-bold leading-tight sm:text-xl">
+                    <h1 class="text-base font-extrabold leading-tight tracking-tight text-slate-950 sm:text-lg">
                         {{ $appTitle }}
                     </h1>
 
-                    <p class="text-xs text-blue-100 sm:text-sm">
+                    <p class="text-xs text-slate-500 sm:text-sm">
                         Portal Kompetensi Siswa
                     </p>
                 </div>
@@ -156,14 +156,14 @@
 
             <a
                 href="{{ route('cek-siswa.index') }}"
-                class="hidden rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold transition hover:bg-white/20 sm:inline-flex"
+                class="hidden items-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-100 sm:inline-flex"
             >
                 Cari Siswa Lain
             </a>
         </div>
     </header>
 
-    <main class="print-container mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+    <main class="print-container mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-9 lg:px-8">
 
         <div class="print-only mb-5 border-b-2 border-blue-700 pb-3">
             <p class="text-xs font-bold uppercase tracking-widest text-blue-700">{{ $appTitle }}</p>
@@ -175,7 +175,7 @@
         <div class="no-print mb-5 flex gap-3">
             <a
                 href="{{ route('cek-siswa.index') }}"
-                class="inline-flex flex-1 items-center justify-center rounded-xl bg-slate-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 sm:flex-none"
+                class="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 sm:flex-none"
             >
                 ← Kembali
             </a>
@@ -183,55 +183,60 @@
             <button
                 type="button"
                 onclick="window.print()"
-                class="inline-flex flex-1 items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 sm:flex-none"
+                class="inline-flex flex-1 items-center justify-center rounded-xl bg-blue-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 sm:flex-none"
             >
                 🖨 Cetak
             </button>
         </div>
 
         {{-- Profil siswa --}}
-        <section class="print-shadow-none overflow-hidden rounded-2xl bg-white shadow-sm">
+        <section class="print-shadow-none overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-[0_18px_55px_-35px_rgba(15,23,42,0.3)]">
 
-            <div class="bg-gradient-to-r from-blue-700 to-indigo-700 px-5 py-6 text-white sm:px-8 sm:py-8">
+            <div class="bg-gradient-to-r from-white via-blue-50/70 to-indigo-50/80 px-5 py-6 text-slate-900 sm:px-8 sm:py-8">
 
                 <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
 
                     <div class="flex items-center gap-4">
 
-                        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-2xl font-bold ring-1 ring-white/20 sm:h-20 sm:w-20 sm:text-3xl">
+                        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-2xl font-extrabold text-white shadow-lg shadow-blue-700/20 ring-4 ring-white sm:h-20 sm:w-20 sm:text-3xl">
                             {{ mb_strtoupper(mb_substr($siswa->nama, 0, 1)) }}
                         </div>
 
                         <div class="min-w-0">
-                            <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">
+                            <p class="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">
                                 {{ $siswa->status === 'alumni' ? 'Alumni' : 'Data Peserta Didik' }}
                             </p>
 
-                            <h2 class="mt-1 break-words text-2xl font-bold sm:text-3xl">
+                            <h2 class="mt-1 break-words text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">
                                 {{ $siswa->nama }}
                             </h2>
 
-                            <p class="mt-1 text-sm text-blue-100">
+                            <p class="mt-1 text-sm text-slate-500 sm:text-base">
                                 Teknik Jaringan Komputer dan Telekomunikasi
                             </p>
                         </div>
                     </div>
 
-                    <div class="rounded-xl border border-white/15 bg-white/10 px-5 py-4 sm:text-right">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-blue-100">
+                    <div class="flex min-w-44 items-center gap-4 rounded-2xl border border-blue-100 bg-white/80 px-5 py-4 shadow-sm sm:justify-between">
+                        <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-500">
                             Progres Kelulusan
                         </p>
 
-                        <p class="mt-1 text-4xl font-bold">
+                        <p class="mt-1 text-4xl font-extrabold tracking-tight text-blue-700">
                             {{ $persentase }}%
                         </p>
+                        </div>
+                        <div class="h-14 w-14 shrink-0 rounded-full p-[5px]" style="background: conic-gradient(#2563eb {{ min(max($persentase, 0), 100) }}%, #e2e8f0 0)">
+                            <div class="h-full w-full rounded-full border-4 border-white bg-blue-50"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid gap-px bg-slate-200 sm:grid-cols-4">
+            <div class="grid gap-px border-t border-slate-200 bg-slate-200 sm:grid-cols-2 xl:grid-cols-4">
 
-                <div class="bg-white p-5">
+                <div class="bg-white p-5 sm:px-6">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
                         Nomor Induk Siswa
                     </p>
@@ -241,7 +246,7 @@
                     </p>
                 </div>
 
-                <div class="bg-white p-5">
+                <div class="bg-white p-5 sm:px-6">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
                         Kelas
                     </p>
@@ -251,7 +256,7 @@
                     </p>
                 </div>
 
-                <div class="bg-white p-5">
+                <div class="bg-white p-5 sm:px-6">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
                         Tingkat
                     </p>
@@ -261,7 +266,7 @@
                     </p>
                 </div>
 
-                <div class="bg-white p-5">
+                <div class="bg-white p-5 sm:px-6">
                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Status</p>
                     <p class="mt-2 font-bold {{ $siswa->status === 'alumni' ? 'text-indigo-700' : 'text-emerald-700' }}">
                         {{ $siswa->status === 'alumni' ? 'Alumni' : 'Aktif' }}
@@ -274,7 +279,7 @@
         </section>
 
         @if ($siswa->status === 'alumni')
-            <section class="mt-8 rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm sm:p-6">
+            <section class="mt-8 rounded-3xl border border-indigo-100 bg-white p-5 shadow-sm sm:p-6">
                 <div class="mb-4">
                     <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600">Arsip Akademik</p>
                     <h2 class="mt-1 text-xl font-bold text-slate-900">Riwayat Nilai per Materi</h2>
@@ -315,22 +320,22 @@
         @endif
 
         {{-- Ringkasan --}}
-        <section class="mt-6">
+        <section class="mt-8">
 
             <div class="mb-4">
-                <p class="text-xs font-semibold uppercase tracking-wider text-blue-600">
+                <p class="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">
                     Ringkasan Akademik
                 </p>
 
-                <h2 class="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
+                <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">
                     Perkembangan Kompetensi
                 </h2>
             </div>
 
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
 
-                <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-lg">
+                <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-lg ring-1 ring-blue-100">
                         📚
                     </div>
 
@@ -343,8 +348,8 @@
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-lg">
+                <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-lg ring-1 ring-emerald-100">
                         ✅
                     </div>
 
@@ -357,8 +362,8 @@
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-lg">
+                <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-lg ring-1 ring-amber-100">
                         📝
                     </div>
 
@@ -371,8 +376,8 @@
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-lg">
+                <div class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:p-5">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-lg ring-1 ring-slate-200">
                         ⏳
                     </div>
 
@@ -386,7 +391,7 @@
                 </div>
             </div>
 
-            <div class="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="mt-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <p class="font-bold text-slate-900">
@@ -398,7 +403,7 @@
                         </p>
                     </div>
 
-                    <p class="text-xl font-bold text-blue-700">
+                    <p class="text-2xl font-extrabold tracking-tight text-blue-700">
                         {{ $persentase }}%
                     </p>
                 </div>
@@ -413,15 +418,15 @@
         </section>
 
         {{-- Materi kompetensi --}}
-        <section class="mt-8">
+        <section class="mt-10">
 
             <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-blue-600">
+                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">
                         Daftar Pembelajaran
                     </p>
 
-                    <h2 class="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
+                    <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">
                         Materi Kompetensi
                     </h2>
                 </div>
@@ -434,7 +439,7 @@
             <div class="space-y-4">
 
                 @if ($materisUrut->isEmpty())
-                    <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm sm:p-12">
+                    <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm sm:p-12">
                         <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-3xl">
                             📚
                         </div>
@@ -464,7 +469,7 @@
                     <article
                         class="
                             print-break-inside-avoid
-                            overflow-hidden rounded-2xl border bg-white shadow-sm
+                            overflow-hidden rounded-3xl border bg-white shadow-sm transition-shadow hover:shadow-md
 
                             @if ($sudahLulus)
                                 border-green-200
@@ -522,7 +527,7 @@
                                             </span>
 
                                             @if ($materi->kode)
-                                                <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                                                <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-100">
                                                     {{ $materi->kode }}
                                                 </span>
                                             @endif
@@ -539,7 +544,7 @@
                                         @endif
 
                                         @if ($sudahDiuji)
-                                            <div class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 text-sm sm:grid-cols-2">
+                                            <div class="mt-4 grid gap-3 rounded-2xl bg-slate-50 p-4 text-sm ring-1 ring-slate-100 sm:grid-cols-2">
 
                                                 <div>
                                                     <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -566,7 +571,7 @@
                                                 </div>
                                             </div>
                                         @else
-                                            <div class="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                                            <div class="mt-4 rounded-2xl bg-slate-50 p-4 text-sm text-slate-500 ring-1 ring-slate-100">
                                                 Kompetensi ini belum dilakukan pengujian.
                                                 Siswa tetap dapat mempelajari materi yang tersedia.
                                             </div>
@@ -579,7 +584,7 @@
                                                 href="{{ asset('storage/' . $materi->pdf_file) }}"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 md:w-auto"
+                                                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 md:w-auto"
                                             >
                                                 📄 Buka Materi PDF
                                             </a>
