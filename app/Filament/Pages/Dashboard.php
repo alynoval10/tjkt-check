@@ -44,6 +44,10 @@ class Dashboard extends BaseDashboard
                             ->preload()
                             ->live(),
                     ]),
-            ]);
+            ])
+            // Filament marks filter forms for partial DOM updates by default.
+            // Dashboard widgets also depend on these filters, so they must be
+            // included in the Livewire render when a selection changes.
+            ->extraAttributes(['wire:partial' => false]);
     }
 }
